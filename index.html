@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -61,10 +62,13 @@
 </head>
 <body class="min-h-screen">
 
-    <div class="max-w-6xl mx-auto px-6 py-12">
+    <!-- Изменено: py-12 (48px) заменено на py-6 (24px) для сокращения отступа сверху в 2 раза -->
+    <div class="max-w-6xl mx-auto px-6 py-6">
         <!-- Header -->
-        <header class="mb-16 flex flex-col items-center justify-center text-center">
-            <h1 class="text-3xl font-light text-white tracking-[0.3em] uppercase text-shadow mb-2">
+        <!-- Изменено: mb-16 заменено на mb-8 для баланса -->
+        <header class="mb-8 flex flex-col items-center justify-center text-center">
+            <!-- Изменено: text-3xl заменено на text-base (~16px), что примерно в 2 раза меньше -->
+            <h1 class="text-base font-light text-white tracking-[0.3em] uppercase text-shadow mb-2">
                 Псовские ответы
             </h1>
         </header>
@@ -106,11 +110,6 @@
 
         updateStatusBarColor();
 
-        /**
-         * Создает кнопку звука в сетке
-         * @param {string} name - Название кнопки
-         * @param {string} audioUrl - Путь к аудиофайлу
-         */
         function createSoundButton(name, audioUrl) {
             const audio = new Audio(audioUrl);
             audio.volume = 1.0;
@@ -127,7 +126,6 @@
             `;
 
             btn.onclick = () => {
-                // Если звук уже играет, сбрасываем его
                 audio.currentTime = 0;
                 audio.play().catch(err => {
                     console.warn("Playback prevented. User interaction required.", err);
@@ -151,10 +149,6 @@
             soundGrid.appendChild(btn);
         }
 
-        // Пример использования:
-        // createSoundButton('Гав', 'bark.mp3');
-
-        // Защита от случайного перетаскивания файлов браузером по умолчанию
         window.addEventListener('dragover', (e) => e.preventDefault());
         window.addEventListener('drop', (e) => e.preventDefault());
     </script>
