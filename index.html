@@ -5,20 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Окрашивание статус-бара в черный цвет (соответствует верхним пикселям картинки) -->
     <meta name="theme-color" id="status-bar-color" content="#000000">
-    <title>Псовские ответы — Звуковая Панель</title>
+    <title>Псовские ответы</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            /* Фоновое изображение из вложения */
+            /* Фоновое изображение */
             background-image: url('fon.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             background-repeat: no-repeat;
-            /* Черный цвет фона, так как верх картинки черный */
+            /* Черный цвет фона */
             background-color: #000000; 
             margin: 0;
             padding: 0;
+            color: white;
+            /* Запрет системных жестов для более "приложения-подобного" вида */
+            touch-action: manipulation;
         }
         .sound-button {
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -29,27 +32,27 @@
             transform: scale(0.92);
         }
         .playing {
-            animation: pulse 1s infinite;
-            border-color: #f59e0b;
-            background-color: rgba(255, 251, 235, 0.95);
+            animation: pulse 1.5s infinite;
+            border-color: rgba(255, 255, 255, 0.5);
+            background-color: rgba(255, 255, 255, 0.15);
         }
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.2); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
         }
         .progress-bar {
-            height: 4px;
-            background: #f59e0b;
+            height: 3px;
+            background: #ffffff;
             position: absolute;
             bottom: 0;
             left: 0;
             transition: width 0.1s linear;
         }
         .text-shadow {
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
         }
-        /* Скрытие полосы прокрутки для чистого вида */
+        /* Скрытие полосы прокрутки */
         ::-webkit-scrollbar {
             display: none;
         }
@@ -57,37 +60,25 @@
 </head>
 <body class="min-h-screen font-sans">
 
-    <div class="max-w-5xl mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto px-6 py-12">
         <!-- Header -->
-        <header class="mb-12 flex items-baseline justify-center">
-            <h1 class="text-2xl font-light text-white tracking-widest uppercase text-shadow">
+        <header class="mb-16 flex flex-col items-center justify-center text-center">
+            <h1 class="text-3xl font-light text-white tracking-[0.3em] uppercase text-shadow mb-2">
                 Псовские ответы
             </h1>
         </header>
 
-        <!-- Кнопка добавления -->
-        <div class="flex justify-center mb-10">
-            <label class="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 px-8 py-3 rounded-2xl cursor-pointer font-medium transition-all shadow-2xl flex items-center gap-2 text-sm uppercase active:scale-95">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                <span>Добавить звуки</span>
-                <input type="file" id="audioInput" multiple accept="audio/*" class="hidden">
-            </label>
-        </div>
-
         <!-- Grid -->
-        <div id="soundGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 pb-20">
-            <!-- Кнопки добавятся здесь -->
+        <div id="soundGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 pb-20">
+            <!-- Здесь могут быть заранее прописанные звуки, если они будут добавлены в код напрямую -->
         </div>
     </div>
 
     <script>
-        const audioInput = document.getElementById('audioInput');
         const soundGrid = document.getElementById('soundGrid');
         const statusBar = document.getElementById('status-bar-color');
 
-        // Автоматическое определение цвета верхнего пикселя для статус-бара
+        // Автоматическое определение цвета фона по картинке
         function updateStatusBarColor() {
             const img = new Image();
             img.crossOrigin = "Anonymous";
@@ -97,7 +88,6 @@
                 const ctx = canvas.getContext('2d');
                 canvas.width = 1;
                 canvas.height = 1;
-                // Рисуем самый верхний левый пиксель
                 ctx.drawImage(img, 0, 0, 1, 1, 0, 0, 1, 1);
                 const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
                 const hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
@@ -105,41 +95,31 @@
                 document.body.style.backgroundColor = hex;
             };
             img.onerror = () => {
-                // Если картинка не найдена, оставляем черный
                 statusBar.setAttribute('content', '#000000');
             };
         }
 
-        // Запускаем анализ цвета при загрузке
         updateStatusBarColor();
 
-        audioInput.addEventListener('change', (e) => {
-            const files = Array.from(e.target.files);
-            if (files.length > 0) {
-                files.forEach(addSound);
-                audioInput.value = '';
-            }
-        });
-
-        function addSound(file) {
-            const fileName = file.name.replace(/\.[^/.]+$/, ""); 
-            const url = URL.createObjectURL(file);
-            const audio = new Audio(url);
+        // Функция для ручного добавления звука (если понадобится вызвать из консоли или кода)
+        function createSoundButton(name, audioUrl) {
+            const audio = new Audio(audioUrl);
             audio.volume = 1.0;
 
             const btn = document.createElement('button');
-            btn.className = "sound-button bg-black/40 backdrop-blur-md border border-white/10 p-4 rounded-2xl flex flex-col items-center justify-center text-center hover:bg-black/60 transition-all h-36 relative overflow-hidden group shadow-lg";
+            btn.className = "sound-button bg-black/30 backdrop-blur-xl border border-white/5 p-5 rounded-3xl flex flex-col items-center justify-center text-center hover:bg-black/50 transition-all h-40 relative overflow-hidden group shadow-2xl";
+            
             btn.innerHTML = `
-                <div class="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                    <span class="text-2xl">🐕</span>
+                <div class="w-14 h-14 bg-white/5 rounded-full flex items-center justify-center mb-4 group-hover:bg-white/10 transition-all duration-300">
+                    <span class="text-2xl opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-transform">🐕</span>
                 </div>
-                <span class="text-[10px] font-bold text-white/90 break-words w-full uppercase leading-tight px-1 overflow-hidden text-ellipsis">${fileName}</span>
-                <div class="progress-bar" style="width: 0%; background: #ffffff;"></div>
+                <span class="text-[11px] font-medium text-white/70 break-words w-full uppercase tracking-tighter leading-tight px-2 overflow-hidden text-ellipsis">${name}</span>
+                <div class="progress-bar" style="width: 0%;"></div>
             `;
 
             btn.onclick = () => {
                 audio.currentTime = 0;
-                audio.play().catch(err => console.warn("Ошибка:", err));
+                audio.play().catch(err => console.warn("Playback error:", err));
             };
 
             audio.onplay = () => btn.classList.add('playing');
@@ -159,13 +139,9 @@
             soundGrid.appendChild(btn);
         }
 
-        // Поддержка перетаскивания
+        // Защита от случайного перетаскивания файлов браузером по умолчанию
         window.addEventListener('dragover', (e) => e.preventDefault());
-        window.addEventListener('drop', (e) => {
-            e.preventDefault();
-            const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('audio/'));
-            files.forEach(addSound);
-        });
+        window.addEventListener('drop', (e) => e.preventDefault());
     </script>
 </body>
 </html>
