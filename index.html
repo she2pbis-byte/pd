@@ -7,13 +7,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            /* Установка фонового изображения */
-            background-image: url('fon.jpg');
+            /* Установка фонового изображения с расширением .png */
+            background-image: url('fon.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             background-repeat: no-repeat;
-            background-color: #78350f; /* Запасной цвет при загрузке фото */
+            background-color: #78350f; /* Запасной цвет (коричневый), если картинка не загрузится */
         }
         .sound-button {
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -26,7 +26,7 @@
         .playing {
             animation: pulse 1s infinite;
             border-color: #f59e0b;
-            background-color: rgba(255, 251, 235, 0.9);
+            background-color: rgba(255, 251, 235, 0.95);
         }
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
@@ -41,25 +41,24 @@
             left: 0;
             transition: width 0.1s linear;
         }
-        /* Тень для текста, чтобы белый заголовок не терялся */
         .text-shadow {
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
         }
     </style>
 </head>
 <body class="min-h-screen font-sans">
 
     <div class="max-w-5xl mx-auto px-4 py-6">
-        <!-- Header с белым текстом без фона -->
+        <!-- Header -->
         <header class="mb-8 flex items-baseline justify-center">
             <h1 class="text-3xl font-black text-white tracking-tight uppercase text-shadow">
                 Псовские ответы
             </h1>
         </header>
 
-        <!-- Кнопка без белого фона вокруг -->
+        <!-- Кнопка добавления -->
         <div class="flex justify-center mb-10">
-            <label class="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 rounded-xl cursor-pointer font-bold transition shadow-xl flex items-center gap-2 text-sm uppercase">
+            <label class="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 rounded-xl cursor-pointer font-bold transition shadow-xl flex items-center gap-2 text-sm uppercase active:scale-95">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
@@ -70,7 +69,7 @@
 
         <!-- Grid -->
         <div id="soundGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            <!-- Кнопки появятся здесь -->
+            <!-- Сюда динамически добавляются кнопки -->
         </div>
 
     </div>
@@ -81,49 +80,64 @@
 
         let sounds = [];
 
+        // Обработка выбора файлов
         audioInput.addEventListener('change', (e) => {
             const files = Array.from(e.target.files);
             if (files.length > 0) {
                 files.forEach(addSound);
+                audioInput.value = ''; // Сброс инпута для повторного выбора тех же файлов
             }
         });
 
         function addSound(file) {
+            // Удаляем расширение из имени файла для отображения на кнопке
             const fileName = file.name.replace(/\.[^/.]+$/, ""); 
             const url = URL.createObjectURL(file);
             const audio = new Audio(url);
             audio.volume = 1.0;
 
             const btn = document.createElement('button');
-            btn.className = "sound-button bg-white/95 border-b-4 border-amber-200 p-4 rounded-2xl flex flex-col items-center justify-center text-center hover:border-amber-400 hover:shadow-xl transition-all h-36 relative overflow-hidden group shadow-md";
+            btn.className = "sound-button bg-white/90 backdrop-blur-sm border-b-4 border-amber-200 p-4 rounded-2xl flex flex-col items-center justify-center text-center hover:border-amber-400 hover:shadow-xl transition-all h-36 relative overflow-hidden group shadow-lg";
             btn.innerHTML = `
                 <div class="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center mb-3 group-hover:bg-amber-100 transition-colors">
                     <span class="text-2xl">🐕</span>
                 </div>
-                <span class="text-xs font-black text-amber-950 break-words w-full uppercase leading-tight px-1">${fileName}</span>
+                <span class="text-[10px] font-black text-amber-950 break-words w-full uppercase leading-tight px-1 overflow-hidden text-ellipsis">${fileName}</span>
                 <div class="progress-bar" style="width: 0%"></div>
             `;
 
+            // Логика воспроизведения
             btn.onclick = () => {
+                // Если звук уже играет, начинаем заново
                 audio.currentTime = 0;
-                audio.play().catch(console.error);
+                audio.play().catch(err => console.warn("Ошибка воспроизведения:", err));
             };
 
+            // События аудио для визуализации
             audio.onplay = () => btn.classList.add('playing');
             audio.onended = () => {
                 btn.classList.remove('playing');
                 btn.querySelector('.progress-bar').style.width = '0%';
             };
+            audio.onpause = () => btn.classList.remove('playing');
+            
             audio.ontimeupdate = () => {
-                const progress = (audio.currentTime / audio.duration) * 100;
-                btn.querySelector('.progress-bar').style.width = `${progress}%`;
+                if (audio.duration) {
+                    const progress = (audio.currentTime / audio.duration) * 100;
+                    btn.querySelector('.progress-bar').style.width = `${progress}%`;
+                }
             };
 
             soundGrid.appendChild(btn);
             sounds.push({ audio, btn });
         }
 
-        window.addEventListener('dragover', (e) => e.preventDefault());
+        // Drag & Drop функционал
+        window.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        });
+
         window.addEventListener('drop', (e) => {
             e.preventDefault();
             const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('audio/'));
