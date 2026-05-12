@@ -13,6 +13,7 @@
             background-position: center;
             background-attachment: fixed;
             background-repeat: no-repeat;
+            background-color: #78350f; /* Запасной цвет при загрузке фото */
         }
         .sound-button {
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -40,32 +41,31 @@
             left: 0;
             transition: width 0.1s linear;
         }
-        /* Небольшое размытие фона для читаемости контента, если нужно */
-        .glass-header {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(4px);
+        /* Тень для текста, чтобы белый заголовок не терялся */
+        .text-shadow {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
     </style>
 </head>
 <body class="min-h-screen font-sans">
 
-    <div class="max-w-5xl mx-auto px-4 py-4">
-        <!-- Компактный Header -->
-        <header class="mb-4 flex items-baseline justify-center border-b border-amber-200 pb-2 glass-header rounded-t-xl">
-            <h1 class="text-xl font-black text-amber-900 tracking-tight uppercase">Псовские ответы</h1>
+    <div class="max-w-5xl mx-auto px-4 py-6">
+        <!-- Header с белым текстом без фона -->
+        <header class="mb-8 flex items-baseline justify-center">
+            <h1 class="text-3xl font-black text-white tracking-tight uppercase text-shadow">
+                Псовские ответы
+            </h1>
         </header>
 
-        <!-- Controls -->
-        <div class="bg-white/90 backdrop-blur-sm p-4 rounded-2xl shadow-md mb-6 border-2 border-amber-200">
-            <div class="flex justify-center">
-                <label class="bg-amber-500 hover:bg-amber-600 text-white px-8 py-3 rounded-xl cursor-pointer font-bold transition shadow-md shadow-amber-100 flex items-center gap-2 text-sm uppercase">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                    <span>Добавить звуки</span>
-                    <input type="file" id="audioInput" multiple accept="audio/*" class="hidden">
-                </label>
-            </div>
+        <!-- Кнопка без белого фона вокруг -->
+        <div class="flex justify-center mb-10">
+            <label class="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 rounded-xl cursor-pointer font-bold transition shadow-xl flex items-center gap-2 text-sm uppercase">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span>Добавить звуки</span>
+                <input type="file" id="audioInput" multiple accept="audio/*" class="hidden">
+            </label>
         </div>
 
         <!-- Grid -->
@@ -73,23 +73,17 @@
             <!-- Кнопки появятся здесь -->
         </div>
 
-        <!-- Empty State -->
-        <div id="emptyState" class="text-center py-10 bg-white/60 backdrop-blur-sm rounded-2xl">
-            <p class="text-amber-900 text-sm font-bold opacity-60 italic">Перетащите файлы в окно браузера для загрузки</p>
-        </div>
     </div>
 
     <script>
         const audioInput = document.getElementById('audioInput');
         const soundGrid = document.getElementById('soundGrid');
-        const emptyState = document.getElementById('emptyState');
 
         let sounds = [];
 
         audioInput.addEventListener('change', (e) => {
             const files = Array.from(e.target.files);
             if (files.length > 0) {
-                emptyState.classList.add('hidden');
                 files.forEach(addSound);
             }
         });
@@ -101,10 +95,10 @@
             audio.volume = 1.0;
 
             const btn = document.createElement('button');
-            btn.className = "sound-button bg-white/95 border-b-2 border-amber-200 p-4 rounded-2xl flex flex-col items-center justify-center text-center hover:border-amber-400 hover:shadow-md transition-all h-32 relative overflow-hidden group shadow-sm";
+            btn.className = "sound-button bg-white/95 border-b-4 border-amber-200 p-4 rounded-2xl flex flex-col items-center justify-center text-center hover:border-amber-400 hover:shadow-xl transition-all h-36 relative overflow-hidden group shadow-md";
             btn.innerHTML = `
-                <div class="w-10 h-10 bg-amber-50 rounded-full flex items-center justify-center mb-2 group-hover:bg-amber-100 transition-colors">
-                    <span class="text-xl">🐕</span>
+                <div class="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center mb-3 group-hover:bg-amber-100 transition-colors">
+                    <span class="text-2xl">🐕</span>
                 </div>
                 <span class="text-xs font-black text-amber-950 break-words w-full uppercase leading-tight px-1">${fileName}</span>
                 <div class="progress-bar" style="width: 0%"></div>
@@ -134,7 +128,6 @@
             e.preventDefault();
             const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('audio/'));
             if (files.length > 0) {
-                emptyState.classList.add('hidden');
                 files.forEach(addSound);
             }
         });
