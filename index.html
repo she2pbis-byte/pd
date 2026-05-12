@@ -6,6 +6,14 @@
     <title>Псовские ответы — Звуковая Панель</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        body {
+            /* Установка фонового изображения */
+            background-image: url('fon.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
         .sound-button {
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             user-select: none;
@@ -17,7 +25,7 @@
         .playing {
             animation: pulse 1s infinite;
             border-color: #f59e0b;
-            background-color: #fffbeb;
+            background-color: rgba(255, 251, 235, 0.9);
         }
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
@@ -32,58 +40,42 @@
             left: 0;
             transition: width 0.1s linear;
         }
+        /* Небольшое размытие фона для читаемости контента, если нужно */
+        .glass-header {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(4px);
+        }
     </style>
 </head>
-<body class="bg-amber-50 min-h-screen font-sans">
+<body class="min-h-screen font-sans">
 
-    <div class="max-w-5xl mx-auto px-4 py-8">
-        <!-- Header -->
-        <header class="mb-10 text-center">
-            <h1 class="text-5xl font-black text-amber-900 mb-2 tracking-tight uppercase">Псовские ответы</h1>
-            <p class="text-amber-800 font-medium opacity-80">Загрузите свои файлы и отвечайте как профессионал</p>
+    <div class="max-w-5xl mx-auto px-4 py-4">
+        <!-- Компактный Header -->
+        <header class="mb-4 flex items-baseline justify-center border-b border-amber-200 pb-2 glass-header rounded-t-xl">
+            <h1 class="text-xl font-black text-amber-900 tracking-tight uppercase">Псовские ответы</h1>
         </header>
 
         <!-- Controls -->
-        <div class="bg-white p-6 rounded-3xl shadow-xl mb-8 border-4 border-amber-200">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div class="flex flex-wrap items-center justify-center gap-4">
-                    <label class="bg-amber-500 hover:bg-amber-600 text-white px-8 py-4 rounded-2xl cursor-pointer font-bold transition shadow-lg shadow-amber-200 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        <span>ДОБАВИТЬ ЗВУКИ</span>
-                        <input type="file" id="audioInput" multiple accept="audio/*" class="hidden">
-                    </label>
-                    <button id="stopAll" class="bg-slate-800 hover:bg-black text-white px-8 py-4 rounded-2xl font-bold transition shadow-lg flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
-                        </svg>
-                        ТИШИНА!
-                    </button>
-                </div>
-                
-                <div class="flex items-center gap-4 bg-amber-50 px-6 py-3 rounded-2xl border border-amber-100">
-                    <span class="text-amber-900 font-bold">🔊</span>
-                    <input type="range" id="globalVolume" min="0" max="1" step="0.05" value="0.8" class="w-32 h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer accent-amber-600">
-                </div>
+        <div class="bg-white/90 backdrop-blur-sm p-4 rounded-2xl shadow-md mb-6 border-2 border-amber-200">
+            <div class="flex justify-center">
+                <label class="bg-amber-500 hover:bg-amber-600 text-white px-8 py-3 rounded-xl cursor-pointer font-bold transition shadow-md shadow-amber-100 flex items-center gap-2 text-sm uppercase">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span>Добавить звуки</span>
+                    <input type="file" id="audioInput" multiple accept="audio/*" class="hidden">
+                </label>
             </div>
         </div>
 
         <!-- Grid -->
-        <div id="soundGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+        <div id="soundGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             <!-- Кнопки появятся здесь -->
         </div>
 
         <!-- Empty State -->
-        <div id="emptyState" class="text-center py-20 flex flex-col items-center">
-            <div class="bg-amber-100 p-8 rounded-full mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                </svg>
-            </div>
-            <p class="text-amber-900 text-xl font-bold opacity-40">Здесь пока тишина...</p>
-            <p class="text-amber-800 opacity-40">Перетащите сюда аудиофайлы, чтобы начать</p>
+        <div id="emptyState" class="text-center py-10 bg-white/60 backdrop-blur-sm rounded-2xl">
+            <p class="text-amber-900 text-sm font-bold opacity-60 italic">Перетащите файлы в окно браузера для загрузки</p>
         </div>
     </div>
 
@@ -91,8 +83,6 @@
         const audioInput = document.getElementById('audioInput');
         const soundGrid = document.getElementById('soundGrid');
         const emptyState = document.getElementById('emptyState');
-        const stopAllBtn = document.getElementById('stopAll');
-        const volumeControl = document.getElementById('globalVolume');
 
         let sounds = [];
 
@@ -108,15 +98,15 @@
             const fileName = file.name.replace(/\.[^/.]+$/, ""); 
             const url = URL.createObjectURL(file);
             const audio = new Audio(url);
-            audio.volume = volumeControl.value;
+            audio.volume = 1.0;
 
             const btn = document.createElement('button');
-            btn.className = "sound-button bg-white border-b-4 border-amber-200 p-6 rounded-3xl flex flex-col items-center justify-center text-center hover:border-amber-400 hover:shadow-xl transition-all h-40 relative overflow-hidden group";
+            btn.className = "sound-button bg-white/95 border-b-2 border-amber-200 p-4 rounded-2xl flex flex-col items-center justify-center text-center hover:border-amber-400 hover:shadow-md transition-all h-32 relative overflow-hidden group shadow-sm";
             btn.innerHTML = `
-                <div class="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center mb-3 group-hover:bg-amber-100 transition-colors">
-                    <span class="text-2xl">🐕</span>
+                <div class="w-10 h-10 bg-amber-50 rounded-full flex items-center justify-center mb-2 group-hover:bg-amber-100 transition-colors">
+                    <span class="text-xl">🐕</span>
                 </div>
-                <span class="text-sm font-black text-amber-950 break-words w-full uppercase leading-tight">${fileName}</span>
+                <span class="text-xs font-black text-amber-950 break-words w-full uppercase leading-tight px-1">${fileName}</span>
                 <div class="progress-bar" style="width: 0%"></div>
             `;
 
@@ -138,20 +128,6 @@
             soundGrid.appendChild(btn);
             sounds.push({ audio, btn });
         }
-
-        stopAllBtn.onclick = () => {
-            sounds.forEach(s => {
-                s.audio.pause();
-                s.audio.currentTime = 0;
-                s.btn.classList.remove('playing');
-                s.btn.querySelector('.progress-bar').style.width = '0%';
-            });
-        };
-
-        volumeControl.oninput = (e) => {
-            const vol = e.target.value;
-            sounds.forEach(s => s.audio.volume = vol);
-        };
 
         window.addEventListener('dragover', (e) => e.preventDefault());
         window.addEventListener('drop', (e) => {
