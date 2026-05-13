@@ -8,8 +8,8 @@
     <!-- Фавикон -->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     
-    <!-- Цвет статус-бара для мобильных устройств -->
-    <meta name="theme-color" content="#000000">
+    <!-- Цвет статус-бара (будет обновлен скриптом) -->
+    <meta id="theme-color-meta" name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <style>
@@ -17,23 +17,22 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            /* Фоновое изображение */
             background-image: url('fon.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            background-color: #000; /* Резервный цвет */
+            /* Цвет фона будет обновлен скриптом для плавного перехода */
+            background-color: #000; 
             color: white;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: background-color 0.5s ease;
         }
 
         .header-container {
-            /* Отступ 12px от верхнего края */
             margin-top: 12px;
-            /* Полностью прозрачный фон */
             background: transparent;
             text-align: center;
             width: 100%;
@@ -41,26 +40,18 @@
         }
 
         h1 {
-            /* Размер шрифта уменьшен в 2 раза (был 2.5rem, стал 1.25rem) */
             font-size: 1.25rem;
             margin: 0;
             text-transform: uppercase;
             letter-spacing: 2px;
-            /* Тень для читаемости на любом фоне */
             text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
         }
 
-        .status-bar-mock {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: env(safe-area-inset-top, 0px);
-            background-color: black;
-            z-index: 1000;
+        /* Невидимый холст для анализа пикселей */
+        #analysis-canvas {
+            display: none;
         }
 
-        /* Дополнительный контент страницы */
         .content {
             margin-top: 40px;
             text-align: center;
@@ -68,8 +59,7 @@
     </style>
 </head>
 <body>
-    <!-- Имитация черного статус-бара -->
-    <div class="status-bar-mock"></div>
+    <canvas id="analysis-canvas"></canvas>
 
     <div class="header-container">
         <h1>ПСОВСКИЕ ОТВЕТЫ</h1>
@@ -80,14 +70,55 @@
     </div>
 
     <script>
-        // Код для проверки загрузки фона
-        window.onload = function() {
+        function updateThemeColor() {
             const img = new Image();
             img.src = 'fon.png';
-            img.onerror = function() {
-                console.warn("Файл fon.png не найден рядом с index.html. Используется черный фон.");
+            img.crossOrigin = "Anonymous"; // На случай, если файл загружается извне
+
+            img.onload = function() {
+                const canvas = document.getElementById('analysis-canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Нам нужен только самый верхний ряд пикселей (1x1 достаточно для среднего значения)
+                canvas.width = img.width;
+                canvas.height = 1;
+                
+                ctx.drawImage(img, 0, 0, img.width, 1, 0, 0, img.width, 1);
+                
+                // Получаем данные пикселей первого ряда
+                const imageData = ctx.getImageData(0, 0, img.width, 1).data;
+                
+                let r = 0, g = 0, b = 0;
+                const count = imageData.length / 4;
+
+                for (let i = 0; i < imageData.length; i += 4) {
+                    r += imageData[i];
+                    g += imageData[i + 1];
+                    b += imageData[i + 2];
+                }
+
+                // Вычисляем средний цвет верхнего края
+                r = Math.floor(r / count);
+                g = Math.floor(g / count);
+                b = Math.floor(b / count);
+
+                const hexColor = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+
+                // Применяем цвет к мета-тегу статус-бара
+                document.getElementById('theme-color-meta').setAttribute('content', hexColor);
+                
+                // Также подкрашиваем фон body для бесшовности
+                document.body.style.backgroundColor = hexColor;
+                
+                console.log("Status bar color updated to:", hexColor);
             };
-        };
+
+            img.onerror = function() {
+                console.error("Не удалось загрузить fon.png для анализа цвета.");
+            };
+        }
+
+        window.onload = updateThemeColor;
     </script>
 </body>
 </html>
