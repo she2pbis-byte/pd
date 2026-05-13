@@ -165,9 +165,19 @@
                 <button class="grid-button">5</button>
                 <button class="grid-button">6</button>
                 <button class="grid-button">7</button>
-                <button class="grid-button">8</button>
+                <button id="ydivlenie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">УДИВЛЕНИЕ</button>
                 <button id="soglasie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">СОГЛАСИЕ</button>
                 <button id="nesoglasie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">НЕ СОГЛАСЕН</button>
+            </div>
+
+            <!-- Список "Удивление" -->
+            <div id="ydivlenie-list" class="buttons-list">
+                <button class="grid-button audio-btn" data-folder="ydivlenie" data-file="батюшки">батюшки</button>
+                <button class="grid-button audio-btn" data-folder="ydivlenie" data-file="куда катиться мир">куда катиться мир</button>
+                <button class="grid-button audio-btn" data-folder="ydivlenie" data-file="странно что это удивило">странно что это удивило</button>
+                <button class="grid-button audio-btn" data-folder="ydivlenie" data-file="уху ел я сегодня">уху ел я сегодня</button>
+                <button class="grid-button audio-btn" data-folder="ydivlenie" data-file="я так и знал">я так и знал</button>
+                <button class="grid-button back-btn">назад</button>
             </div>
 
             <!-- Список "Согласие" -->
@@ -228,14 +238,21 @@
         }
 
         const mainGrid = document.getElementById('main-grid');
+        const YdivlenieList = document.getElementById('ydivlenie-list');
         const SoglasieList = document.getElementById('soglasie-list');
         const NesoglasieList = document.getElementById('nesoglasie-list');
         
+        const triggerYdivlenie = document.getElementById('ydivlenie-trigger');
         const triggerSoglasie = document.getElementById('soglasie-trigger');
         const triggerNesoglasie = document.getElementById('nesoglasie-trigger');
         const backBtns = document.querySelectorAll('.back-btn');
 
         // Открытие разделов
+        triggerYdivlenie.addEventListener('click', () => {
+            mainGrid.style.display = 'none';
+            YdivlenieList.classList.add('show-animated');
+        });
+
         triggerSoglasie.addEventListener('click', () => {
             mainGrid.style.display = 'none';
             SoglasieList.classList.add('show-animated');
@@ -249,9 +266,11 @@
         // Кнопки назад
         backBtns.forEach(btn => {
             btn.addEventListener('click', () => {
+                YdivlenieList.classList.remove('show-animated');
                 SoglasieList.classList.remove('show-animated');
                 NesoglasieList.classList.remove('show-animated');
                 setTimeout(() => {
+                    YdivlenieList.style.display = 'none';
                     SoglasieList.style.display = 'none';
                     NesoglasieList.style.display = 'none';
                     mainGrid.style.display = 'grid';
