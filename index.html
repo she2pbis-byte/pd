@@ -21,17 +21,25 @@
             background-attachment: fixed;
             background-color: #000; 
             color: white;
-            min-height: 100vh;
+            height: 100vh; /* Фиксированная высота для центрирования */
             display: flex;
             flex-direction: column;
-            align-items: center;
             transition: background-color 0.5s ease;
-            overflow-x: hidden;
+            overflow: hidden; /* Предотвращаем скролл для точного центрирования */
+        }
+
+        /* Обертка для центрирования всего контента */
+        .app-wrapper {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Центрирует всё содержимое по вертикали */
+            align-items: center;
+            width: 100%;
         }
 
         .header-container {
-            margin-top: 40px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             background: transparent;
             text-align: center;
             width: 100%;
@@ -49,7 +57,6 @@
         .buttons-container {
             width: 90%;
             max-width: 400px;
-            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -90,41 +97,27 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        /* Стили для кнопок в разделе Согласие */
         .buttons-list .audio-btn {
-            /* Прозрачность уменьшена в 1.5 раза (0.5 * 1.5 = 0.75) */
             background-color: rgba(255, 255, 255, 0.75); 
             color: #000000; 
             border: 1px solid rgba(255, 255, 255, 0.8);
             font-weight: 800;
-            /* Высота уменьшена в 1.5 раза (70 / 1.5 ≈ 46) */
             min-height: 46px; 
             font-size: 1.5rem; 
-            -webkit-text-stroke: 0;
-            text-stroke: 0;
         }
 
-        /* Стиль кнопки Назад */
         #back-btn {
             background-color: #000000;
             color: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.4);
-            margin-top: 20px;
+            margin-top: 10px;
             min-height: 50px;
-            opacity: 1;
-            backdrop-filter: none;
-            -webkit-text-stroke: 0; 
             font-size: 1rem;
         }
 
         .grid-button:active {
             background-color: rgba(255, 255, 255, 0.3);
             transform: scale(0.95);
-        }
-
-        .buttons-list .audio-btn:active {
-            /* Для активного состояния тоже плотнее */
-            background-color: rgba(255, 255, 255, 0.85);
         }
 
         .grid-button.playing {
@@ -141,20 +134,6 @@
             display: none;
         }
 
-        .content {
-            margin-top: 25px;
-            text-align: center;
-            opacity: 0.9;
-            font-size: 1rem;
-            padding-bottom: 40px;
-            font-weight: 300;
-            letter-spacing: 1px;
-        }
-
-        #hint-text {
-            min-height: 1.2em;
-        }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
@@ -169,39 +148,37 @@
 <body>
     <canvas id="analysis-canvas"></canvas>
 
-    <div class="header-container">
-        <h1 id="main-title">ПСОВСКИЕ ОТВЕТЫ</h1>
-    </div>
-
-    <div class="buttons-container">
-        <!-- Главная сетка -->
-        <div id="main-grid" class="buttons-grid">
-            <button class="grid-button">1</button>
-            <button class="grid-button">2</button>
-            <button class="grid-button">3</button>
-            <button class="grid-button">4</button>
-            <button class="grid-button">5</button>
-            <button class="grid-button">6</button>
-            <button class="grid-button">7</button>
-            <button class="grid-button">8</button>
-            <button id="soglasie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">СОГЛАСИЕ</button>
-            <button class="grid-button">10</button>
+    <div class="app-wrapper">
+        <div class="header-container">
+            <h1 id="main-title">ПСОВСКИЕ ОТВЕТЫ</h1>
         </div>
 
-        <!-- Список "Согласие" -->
-        <div id="soglasie-list" class="buttons-list">
-            <button class="grid-button audio-btn" data-file="вопросов нуль">вопросов нуль</button>
-            <button class="grid-button audio-btn" data-file="гениально">гениально</button>
-            <button class="grid-button audio-btn" data-file="доверяю но">доверяю но</button>
-            <button class="grid-button audio-btn" data-file="не поспоришь">не поспоришь</button>
-            <button class="grid-button audio-btn" data-file="похоже правда">похоже правда</button>
-            <button class="grid-button audio-btn" data-file="принимаю условия">принимаю условия</button>
-            <button id="back-btn" class="grid-button">назад</button>
-        </div>
-    </div>
+        <div class="buttons-container">
+            <!-- Главная сетка -->
+            <div id="main-grid" class="buttons-grid">
+                <button class="grid-button">1</button>
+                <button class="grid-button">2</button>
+                <button class="grid-button">3</button>
+                <button class="grid-button">4</button>
+                <button class="grid-button">5</button>
+                <button class="grid-button">6</button>
+                <button class="grid-button">7</button>
+                <button class="grid-button">8</button>
+                <button id="soglasie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">СОГЛАСИЕ</button>
+                <button class="grid-button">10</button>
+            </div>
 
-    <div class="content">
-        <p id="hint-text"></p>
+            <!-- Список "Согласие" -->
+            <div id="soglasie-list" class="buttons-list">
+                <button class="grid-button audio-btn" data-file="вопросов нуль">вопросов нуль</button>
+                <button class="grid-button audio-btn" data-file="гениально">гениально</button>
+                <button class="grid-button audio-btn" data-file="доверяю но">доверяю но</button>
+                <button class="grid-button audio-btn" data-file="не поспоришь">не поспоришь</button>
+                <button class="grid-button audio-btn" data-file="похоже правда">похоже правда</button>
+                <button class="grid-button audio-btn" data-file="принимаю условия">принимаю условия</button>
+                <button id="back-btn" class="grid-button">назад</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -239,12 +216,10 @@
         const MapList = document.getElementById('soglasie-list');
         const trigger = document.getElementById('soglasie-trigger');
         const backBtn = document.getElementById('back-btn');
-        const hintText = document.getElementById('hint-text');
 
         trigger.addEventListener('click', () => {
             mainGrid.style.display = 'none';
             MapList.classList.add('show-animated');
-            hintText.innerText = 'РАЗДЕЛ: СОГЛАСИЕ';
         });
 
         backBtn.addEventListener('click', () => {
@@ -252,7 +227,6 @@
             setTimeout(() => {
                 MapList.style.display = 'none';
                 mainGrid.style.display = 'grid';
-                hintText.innerText = '';
             }, 10);
         });
 
