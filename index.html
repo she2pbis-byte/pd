@@ -28,7 +28,6 @@
             overflow: hidden;
         }
 
-        /* Обертка: поднята вверх */
         .app-wrapper {
             flex-grow: 1;
             display: flex;
@@ -63,7 +62,6 @@
             align-items: center;
         }
 
-        /* Уменьшено расстояние между кнопками в 2 раза (было 15px, стало 7.5px) */
         .buttons-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -99,7 +97,6 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        /* Специфичные стили для списка "Согласие" */
         .buttons-list .audio-btn {
             background-color: rgba(255, 255, 255, 0.75); 
             color: #000000; 
@@ -123,11 +120,12 @@
             transform: scale(0.95);
         }
 
+        /* Обновлено: фон становится менее прозрачным (0.95 вместо 0.3) для лучшей видимости при игре */
         .grid-button.playing {
             border-color: #00ffcc;
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
-            background-color: rgba(0, 255, 204, 0.3) !important;
-            color: #ffffff !important;
+            background-color: rgba(0, 255, 204, 0.95) !important;
+            color: #000000 !important;
             opacity: 1 !important;
         }
 
