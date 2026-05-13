@@ -106,7 +106,7 @@
             font-size: 1rem; 
         }
 
-        #back-btn {
+        .back-btn {
             background-color: #000000;
             color: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.4);
@@ -120,7 +120,6 @@
             transform: scale(0.95);
         }
 
-        /* Обновлено: фон становится менее прозрачным (0.95 вместо 0.3) для лучшей видимости при игре */
         .grid-button.playing {
             border-color: #00ffcc;
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
@@ -168,18 +167,31 @@
                 <button class="grid-button">7</button>
                 <button class="grid-button">8</button>
                 <button id="soglasie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">СОГЛАСИЕ</button>
-                <button class="grid-button">10</button>
+                <button id="nesoglasie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">НЕ СОГЛАСЕН</button>
             </div>
 
             <!-- Список "Согласие" -->
             <div id="soglasie-list" class="buttons-list">
-                <button class="grid-button audio-btn" data-file="вопросов нуль">вопросов нуль</button>
-                <button class="grid-button audio-btn" data-file="гениально">гениально</button>
-                <button class="grid-button audio-btn" data-file="доверяю но">доверяю но</button>
-                <button class="grid-button audio-btn" data-file="не поспоришь">не поспоришь</button>
-                <button class="grid-button audio-btn" data-file="похоже правда">похоже правда</button>
-                <button class="grid-button audio-btn" data-file="принимаю условия">принимаю условия</button>
-                <button id="back-btn" class="grid-button">назад</button>
+                <button class="grid-button audio-btn" data-folder="soglasie" data-file="вопросов нуль">вопросов нуль</button>
+                <button class="grid-button audio-btn" data-folder="soglasie" data-file="гениально">гениально</button>
+                <button class="grid-button audio-btn" data-folder="soglasie" data-file="доверяю но">доверяю но</button>
+                <button class="grid-button audio-btn" data-folder="soglasie" data-file="не поспоришь">не поспоришь</button>
+                <button class="grid-button audio-btn" data-folder="soglasie" data-file="похоже правда">похоже правда</button>
+                <button class="grid-button audio-btn" data-folder="soglasie" data-file="принимаю условия">принимаю условия</button>
+                <button class="grid-button back-btn">назад</button>
+            </div>
+
+            <!-- Список "Не согласен" -->
+            <div id="nesoglasie-list" class="buttons-list">
+                <button class="grid-button audio-btn" data-folder="nesoglasie" data-file="дешовая монепсуляция">дешовая монепсуляция</button>
+                <button class="grid-button audio-btn" data-folder="nesoglasie" data-file="не надо нервировать">не надо нервировать</button>
+                <button class="grid-button audio-btn" data-folder="nesoglasie" data-file="непопулярная версия">непопулярная версия</button>
+                <button class="grid-button audio-btn" data-folder="nesoglasie" data-file="обоснуй">обоснуй</button>
+                <button class="grid-button audio-btn" data-folder="nesoglasie" data-file="ошибаешься сашенька">ошибаешься сашенька</button>
+                <button class="grid-button audio-btn" data-folder="nesoglasie" data-file="странная логика">странная логика</button>
+                <button class="grid-button audio-btn" data-folder="nesoglasie" data-file="суета задорма">суета задорма</button>
+                <button class="grid-button audio-btn" data-folder="nesoglasie" data-file="чую подвох">чую подвох</button>
+                <button class="grid-button back-btn">назад</button>
             </div>
         </div>
     </div>
@@ -216,21 +228,35 @@
         }
 
         const mainGrid = document.getElementById('main-grid');
-        const MapList = document.getElementById('soglasie-list');
-        const trigger = document.getElementById('soglasie-trigger');
-        const backBtn = document.getElementById('back-btn');
+        const SoglasieList = document.getElementById('soglasie-list');
+        const NesoglasieList = document.getElementById('nesoglasie-list');
+        
+        const triggerSoglasie = document.getElementById('soglasie-trigger');
+        const triggerNesoglasie = document.getElementById('nesoglasie-trigger');
+        const backBtns = document.querySelectorAll('.back-btn');
 
-        trigger.addEventListener('click', () => {
+        // Открытие разделов
+        triggerSoglasie.addEventListener('click', () => {
             mainGrid.style.display = 'none';
-            MapList.classList.add('show-animated');
+            SoglasieList.classList.add('show-animated');
         });
 
-        backBtn.addEventListener('click', () => {
-            MapList.classList.remove('show-animated');
-            setTimeout(() => {
-                MapList.style.display = 'none';
-                mainGrid.style.display = 'grid';
-            }, 10);
+        triggerNesoglasie.addEventListener('click', () => {
+            mainGrid.style.display = 'none';
+            NesoglasieList.classList.add('show-animated');
+        });
+
+        // Кнопки назад
+        backBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                SoglasieList.classList.remove('show-animated');
+                NesoglasieList.classList.remove('show-animated');
+                setTimeout(() => {
+                    SoglasieList.style.display = 'none';
+                    NesoglasieList.style.display = 'none';
+                    mainGrid.style.display = 'grid';
+                }, 10);
+            });
         });
 
         let currentAudio = null;
@@ -238,9 +264,10 @@
 
         document.querySelectorAll('.audio-btn').forEach(button => {
             button.addEventListener('click', function() {
+                const folder = this.getAttribute('data-folder');
                 const fileName = this.getAttribute('data-file');
                 const encodedName = encodeURIComponent(fileName);
-                const audioPath = `soglasie/${encodedName}.mp3`;
+                const audioPath = `${folder}/${encodedName}.mp3`;
 
                 if (currentAudio) {
                     currentAudio.pause();
