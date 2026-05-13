@@ -82,7 +82,7 @@
             border: 1px solid rgba(255, 255, 255, 0.5);
             color: white;
             padding: 5px 10px; 
-            font-size: 1rem; /* Базовый размер шрифта для всех кнопок */
+            font-size: 1rem; 
             text-align: center;
             cursor: pointer;
             border-radius: 15px; 
@@ -105,7 +105,7 @@
             border: 1px solid rgba(255, 255, 255, 0.8);
             font-weight: 800;
             min-height: 46px; 
-            font-size: 1rem; /* Размер шрифта теперь такой же, как на главной */
+            font-size: 1rem; 
         }
 
         #back-btn {
@@ -122,10 +122,13 @@
             transform: scale(0.95);
         }
 
+        /* Состояние при воспроизведении */
         .grid-button.playing {
             border-color: #00ffcc;
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
             background-color: rgba(0, 255, 204, 0.3) !important;
+            color: #ffffff !important; /* Белый непрозрачный шрифт при игре */
+            opacity: 1 !important;
         }
 
         .grid-button.error {
