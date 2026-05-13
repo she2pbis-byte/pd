@@ -28,25 +28,26 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
         }
 
-        .container {
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .header-container {
+            /* Отступ 12px от верхнего края */
+            margin-top: 12px;
+            /* Полностью прозрачный фон */
+            background: transparent;
             text-align: center;
-            max-width: 90%;
+            width: 100%;
+            z-index: 1001;
         }
 
         h1 {
-            font-size: 2.5rem;
+            /* Размер шрифта уменьшен в 2 раза (был 2.5rem, стал 1.25rem) */
+            font-size: 1.25rem;
             margin: 0;
             text-transform: uppercase;
             letter-spacing: 2px;
+            /* Тень для читаемости на любом фоне */
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
         }
 
         .status-bar-mock {
@@ -54,18 +55,27 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: env(safe-area-inset-top, 20px);
+            height: env(safe-area-inset-top, 0px);
             background-color: black;
             z-index: 1000;
+        }
+
+        /* Дополнительный контент страницы */
+        .content {
+            margin-top: 40px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <!-- Имитация черного статус-бара (для визуализации) -->
+    <!-- Имитация черного статус-бара -->
     <div class="status-bar-mock"></div>
 
-    <div class="container">
+    <div class="header-container">
         <h1>ПСОВСКИЕ ОТВЕТЫ</h1>
+    </div>
+
+    <div class="content">
         <p>Добро пожаловать на страницу.</p>
     </div>
 
