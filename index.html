@@ -28,7 +28,7 @@
             overflow: hidden;
         }
 
-        /* Обертка: изменено с center на flex-start для поднятия вверх */
+        /* Обертка: поднята вверх */
         .app-wrapper {
             flex-grow: 1;
             display: flex;
@@ -36,7 +36,7 @@
             justify-content: flex-start; 
             align-items: center;
             width: 100%;
-            padding-top: 40px; /* Отступ сверху */
+            padding-top: 40px; 
         }
 
         .header-container {
@@ -82,7 +82,7 @@
             border: 1px solid rgba(255, 255, 255, 0.5);
             color: white;
             padding: 5px 10px; 
-            font-size: 1rem;
+            font-size: 1rem; /* Базовый размер шрифта для всех кнопок */
             text-align: center;
             cursor: pointer;
             border-radius: 15px; 
@@ -98,13 +98,14 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
+        /* Специфичные стили для списка "Согласие" */
         .buttons-list .audio-btn {
             background-color: rgba(255, 255, 255, 0.75); 
             color: #000000; 
             border: 1px solid rgba(255, 255, 255, 0.8);
             font-weight: 800;
             min-height: 46px; 
-            font-size: 1.5rem; 
+            font-size: 1rem; /* Размер шрифта теперь такой же, как на главной */
         }
 
         #back-btn {
