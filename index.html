@@ -159,7 +159,7 @@
             <!-- Главная сетка -->
             <div id="main-grid" class="buttons-grid">
                 <button id="vozmyschenie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">ВОЗМУЩЕНИЕ</button>
-                <button class="grid-button">4</button>
+                <button id="dosada-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">ДОСАДА</button>
                 <button id="otricanie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">ОТРИЦАНИЕ</button>
                 <button id="busy-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">Я ЗАНЯТ</button>
                 <button id="ygroza-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">УГРОЗА</button>
@@ -177,6 +177,19 @@
                 <button class="grid-button audio-btn" data-folder="vozmyschenie" data-file="пустые желудочки">пустые желудочки</button>
                 <button class="grid-button audio-btn" data-folder="vozmyschenie" data-file="ситуацию усугублять">ситуацию усугублять</button>
                 <button class="grid-button audio-btn" data-folder="vozmyschenie" data-file="ты слушаешь меня вообще">ты слушаешь меня вообще</button>
+                <button class="grid-button back-btn">назад</button>
+            </div>
+
+            <!-- Список "Досада" -->
+            <div id="dosada-list" class="buttons-list">
+                <button class="grid-button audio-btn" data-folder="dosada" data-file="алес викторыч">алес викторыч</button>
+                <button class="grid-button audio-btn" data-folder="dosada" data-file="мопсарнулся">мопсарнулся</button>
+                <button class="grid-button audio-btn" data-folder="dosada" data-file="не то слово">не то слово</button>
+                <button class="grid-button audio-btn" data-folder="dosada" data-file="неприятная неожиданность">неприятная неожиданность</button>
+                <button class="grid-button audio-btn" data-folder="dosada" data-file="ой матерь мопсья">ой матерь мопсья</button>
+                <button class="grid-button audio-btn" data-folder="dosada" data-file="сделал все что мопс">сделал все что мопс</button>
+                <button class="grid-button audio-btn" data-folder="dosada" data-file="тошность бытия">тошность бытия</button>
+                <button class="grid-button audio-btn" data-folder="dosada" data-file="хоспади за что">хоспади за что</button>
                 <button class="grid-button back-btn">назад</button>
             </div>
 
@@ -284,7 +297,8 @@
             'soglasie': document.getElementById('soglasie-list'),
             'nesoglasie': document.getElementById('nesoglasie-list'),
             'otricanie': document.getElementById('otricanie-list'),
-            'vozmyschenie': document.getElementById('vozmyschenie-list')
+            'vozmyschenie': document.getElementById('vozmyschenie-list'),
+            'dosada': document.getElementById('dosada-list')
         };
         
         const triggers = {
@@ -294,7 +308,8 @@
             'soglasie': document.getElementById('soglasie-trigger'),
             'nesoglasie': document.getElementById('nesoglasie-trigger'),
             'otricanie': document.getElementById('otricanie-trigger'),
-            'vozmyschenie': document.getElementById('vozmyschenie-trigger')
+            'vozmyschenie': document.getElementById('vozmyschenie-trigger'),
+            'dosada': document.getElementById('dosada-trigger')
         };
         
         const backBtns = document.querySelectorAll('.back-btn');
