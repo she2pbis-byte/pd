@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ПСОВСКИЕ ОТВЕТЫ</title>
     
-    <!-- Фавикон -->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     
-    <!-- Цвет статус-бара -->
     <meta id="theme-color-meta" name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -16,7 +14,7 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-image: url('fon.png');
             background-size: cover;
             background-position: center;
@@ -32,8 +30,8 @@
         }
 
         .header-container {
-            margin-top: 20px;
-            margin-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
             background: transparent;
             text-align: center;
             width: 100%;
@@ -41,18 +39,17 @@
         }
 
         h1 {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             margin: 0;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+            letter-spacing: 4px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
         }
 
-        /* Контейнеры для кнопок */
         .buttons-container {
             width: 90%;
             max-width: 400px;
-            padding: 10px 20px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -61,40 +58,51 @@
         .buttons-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 15px;
             width: 100%;
         }
 
-        /* Список в один столбец для согласия */
         .buttons-list {
-            display: none; /* Скрыто по умолчанию */
+            display: none;
             flex-direction: column;
             gap: 12px;
             width: 100%;
         }
 
         .grid-button {
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 1px solid white;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             color: white;
-            padding: 12px 10px; 
+            padding: 15px 10px; 
             font-size: 1rem;
             text-align: center;
             cursor: pointer;
-            border-radius: 12px; 
-            transition: all 0.3s ease;
-            backdrop-filter: blur(4px);
+            border-radius: 15px; 
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             -webkit-tap-highlight-color: transparent;
             text-transform: uppercase;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 50px;
+            min-height: 60px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         .grid-button:active {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: scale(0.96);
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(0.95);
+        }
+
+        .grid-button.playing {
+            border-color: #00ffcc;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
+            background-color: rgba(0, 255, 204, 0.1);
+        }
+
+        .grid-button.error {
+            border-color: #ff4444;
         }
 
         #analysis-canvas {
@@ -102,22 +110,23 @@
         }
 
         .content {
-            margin-top: 15px;
+            margin-top: 25px;
             text-align: center;
-            opacity: 0.8;
-            font-size: 0.9rem;
-            padding-bottom: 30px;
+            opacity: 0.9;
+            font-size: 1rem;
+            padding-bottom: 40px;
+            font-weight: 300;
+            letter-spacing: 1px;
         }
 
-        /* Анимация появления */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .show-animated {
             display: flex !important;
-            animation: fadeIn 0.4s ease forwards;
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
     </style>
 </head>
@@ -139,7 +148,7 @@
             <button class="grid-button">6</button>
             <button class="grid-button">7</button>
             <button class="grid-button">8</button>
-            <button id="soglasie-trigger" class="grid-button">СОГЛАСИЕ</button>
+            <button id="soglasie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">СОГЛАСИЕ</button>
             <button class="grid-button">10</button>
         </div>
 
@@ -151,8 +160,7 @@
             <button class="grid-button audio-btn" data-file="не поспоришь">не поспоришь</button>
             <button class="grid-button audio-btn" data-file="похоже правда">похоже правда</button>
             <button class="grid-button audio-btn" data-file="принимаю условия">принимаю условия</button>
-            <!-- Добавил кнопку назад для удобства -->
-            <button id="back-btn" class="grid-button" style="border-color: rgba(255,255,255,0.4); font-size: 0.8rem; margin-top: 10px;">назад</button>
+            <button id="back-btn" class="grid-button" style="border-color: rgba(255,255,255,0.3); font-size: 0.8rem; margin-top: 20px; min-height: 40px;">← назад</button>
         </div>
     </div>
 
@@ -161,85 +169,98 @@
     </div>
 
     <script>
-        // 1. Динамический цвет темы
+        // 1. Определение цвета фона на основе изображения
         function updateThemeColor() {
             const img = new Image();
             img.src = 'fon.png';
             img.crossOrigin = "Anonymous"; 
 
             img.onload = function() {
-                const canvas = document.getElementById('analysis-canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = img.width;
-                canvas.height = 1;
-                ctx.drawImage(img, 0, 0, img.width, 1, 0, 0, img.width, 1);
-                const imageData = ctx.getImageData(0, 0, img.width, 1).data;
-                let r = 0, g = 0, b = 0;
-                const count = imageData.length / 4;
-                for (let i = 0; i < imageData.length; i += 4) {
-                    r += imageData[i]; g += imageData[i + 1]; b += imageData[i + 2];
+                try {
+                    const canvas = document.getElementById('analysis-canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = 1;
+                    ctx.drawImage(img, 0, 0, img.width, 1, 0, 0, img.width, 1);
+                    const imageData = ctx.getImageData(0, 0, img.width, 1).data;
+                    let r = 0, g = 0, b = 0;
+                    const count = imageData.length / 4;
+                    for (let i = 0; i < imageData.length; i += 4) {
+                        r += imageData[i]; g += imageData[i + 1]; b += imageData[i + 2];
+                    }
+                    r = Math.floor(r / count);
+                    g = Math.floor(g / count);
+                    b = Math.floor(b / count);
+                    const hexColor = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+                    document.getElementById('theme-color-meta').setAttribute('content', hexColor);
+                    document.body.style.backgroundColor = hexColor;
+                } catch(e) {
+                    console.log("Canvas error:", e);
                 }
-                r = Math.floor(r / count);
-                g = Math.floor(g / count);
-                b = Math.floor(b / count);
-                const hexColor = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-                document.getElementById('theme-color-meta').setAttribute('content', hexColor);
-                document.body.style.backgroundColor = hexColor;
-            };
-
-            img.onerror = function() {
-                document.body.style.backgroundColor = "#121212";
             };
         }
 
-        // 2. Логика интерфейса
+        // 2. Навигация
         const mainGrid = document.getElementById('main-grid');
-        const soglasieList = document.getElementById('soglasie-list');
+        const MapList = document.getElementById('soglasie-list');
         const trigger = document.getElementById('soglasie-trigger');
         const backBtn = document.getElementById('back-btn');
         const hintText = document.getElementById('hint-text');
 
-        // Переход в режим "Согласие"
         trigger.addEventListener('click', () => {
             mainGrid.style.display = 'none';
-            soglasieList.classList.add('show-animated');
-            hintText.innerText = 'Раздел: СОГЛАСИЕ';
+            MapList.classList.add('show-animated');
+            hintText.innerText = 'РАЗДЕЛ: СОГЛАСИЕ';
         });
 
-        // Возврат назад
         backBtn.addEventListener('click', () => {
-            soglasieList.classList.remove('show-animated');
-            soglasieList.style.display = 'none';
-            mainGrid.style.display = 'grid';
-            hintText.innerText = 'Выберите номер ответа';
+            MapList.classList.remove('show-animated');
+            setTimeout(() => {
+                MapList.style.display = 'none';
+                mainGrid.style.display = 'grid';
+                hintText.innerText = 'Выберите номер ответа';
+            }, 10);
         });
 
-        // 3. Воспроизведение аудио
+        // 3. Улучшенная логика Аудио
         let currentAudio = null;
+        let activeBtn = null;
 
         document.querySelectorAll('.audio-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const fileName = this.getAttribute('data-file');
-                const audioPath = `soglasie/${fileName}.mp3`;
+                
+                // Важно: Кодируем имя файла для поддержки кириллицы
+                const encodedName = encodeURIComponent(fileName);
+                const audioPath = `soglasie/${encodedName}.mp3`;
 
-                // Останавливаем текущее аудио, если оно играет
+                // Очистка предыдущего состояния
                 if (currentAudio) {
                     currentAudio.pause();
                     currentAudio.currentTime = 0;
                 }
+                if (activeBtn) {
+                    activeBtn.classList.remove('playing', 'error');
+                }
 
                 const audio = new Audio(audioPath);
                 currentAudio = audio;
+                activeBtn = this;
+
+                // Добавляем класс проигрывания
+                this.classList.add('playing');
 
                 audio.play().catch(error => {
-                    console.error("Ошибка воспроизведения:", error);
-                    // На мобильных устройствах автовоспроизведение требует первого клика пользователя
+                    console.error("Audio error:", error);
+                    this.classList.remove('playing');
+                    this.classList.add('error');
+                    
+                    // Убираем индикацию ошибки через секунду
+                    setTimeout(() => this.classList.remove('error'), 1000);
                 });
 
-                // Визуальный эффект при проигрывании
-                this.style.borderColor = "#ffcc00";
                 audio.onended = () => {
-                    this.style.borderColor = "white";
+                    this.classList.remove('playing');
                 };
             });
         });
