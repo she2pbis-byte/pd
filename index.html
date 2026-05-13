@@ -164,10 +164,22 @@
                 <button class="grid-button">4</button>
                 <button class="grid-button">5</button>
                 <button class="grid-button">6</button>
-                <button class="grid-button">7</button>
+                <button id="ygroza-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">УГРОЗА</button>
                 <button id="ydivlenie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">УДИВЛЕНИЕ</button>
                 <button id="soglasie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">СОГЛАСИЕ</button>
                 <button id="nesoglasie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">НЕ СОГЛАСЕН</button>
+            </div>
+
+            <!-- Список "Угроза" -->
+            <div id="ygroza-list" class="buttons-list">
+                <button class="grid-button audio-btn" data-folder="ygroza" data-file="мстя моя">мстя моя</button>
+                <button class="grid-button audio-btn" data-folder="ygroza" data-file="ой все">ой все</button>
+                <button class="grid-button audio-btn" data-folder="ygroza" data-file="подумай о псоведении">подумай о псоведении</button>
+                <button class="grid-button audio-btn" data-folder="ygroza" data-file="сотри присутствие">сотри присутствие</button>
+                <button class="grid-button audio-btn" data-folder="ygroza" data-file="тьфу на тебя">тьфу на тебя</button>
+                <button class="grid-button audio-btn" data-folder="ygroza" data-file="щас начищу">щас начищу</button>
+                <button class="grid-button audio-btn" data-folder="ygroza" data-file="я пердупредил">я пердупредил</button>
+                <button class="grid-button back-btn">назад</button>
             </div>
 
             <!-- Список "Удивление" -->
@@ -238,16 +250,23 @@
         }
 
         const mainGrid = document.getElementById('main-grid');
+        const YgrozaList = document.getElementById('ygroza-list');
         const YdivlenieList = document.getElementById('ydivlenie-list');
         const SoglasieList = document.getElementById('soglasie-list');
         const NesoglasieList = document.getElementById('nesoglasie-list');
         
+        const triggerYgroza = document.getElementById('ygroza-trigger');
         const triggerYdivlenie = document.getElementById('ydivlenie-trigger');
         const triggerSoglasie = document.getElementById('soglasie-trigger');
         const triggerNesoglasie = document.getElementById('nesoglasie-trigger');
         const backBtns = document.querySelectorAll('.back-btn');
 
         // Открытие разделов
+        triggerYgroza.addEventListener('click', () => {
+            mainGrid.style.display = 'none';
+            YgrozaList.classList.add('show-animated');
+        });
+
         triggerYdivlenie.addEventListener('click', () => {
             mainGrid.style.display = 'none';
             YdivlenieList.classList.add('show-animated');
@@ -266,10 +285,12 @@
         // Кнопки назад
         backBtns.forEach(btn => {
             btn.addEventListener('click', () => {
+                YgrozaList.classList.remove('show-animated');
                 YdivlenieList.classList.remove('show-animated');
                 SoglasieList.classList.remove('show-animated');
                 NesoglasieList.classList.remove('show-animated');
                 setTimeout(() => {
+                    YgrozaList.style.display = 'none';
                     YdivlenieList.style.display = 'none';
                     SoglasieList.style.display = 'none';
                     NesoglasieList.style.display = 'none';
