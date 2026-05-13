@@ -162,12 +162,22 @@
                 <button class="grid-button">2</button>
                 <button class="grid-button">3</button>
                 <button class="grid-button">4</button>
-                <button class="grid-button">5</button>
+                <button id="otricanie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">ОТРИЦАНИЕ</button>
                 <button id="busy-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">Я ЗАНЯТ</button>
                 <button id="ygroza-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">УГРОЗА</button>
                 <button id="ydivlenie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">УДИВЛЕНИЕ</button>
                 <button id="soglasie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">СОГЛАСИЕ</button>
                 <button id="nesoglasie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">НЕ СОГЛАСЕН</button>
+            </div>
+
+            <!-- Список "Отрицание" -->
+            <div id="otricanie-list" class="buttons-list">
+                <button class="grid-button audio-btn" data-folder="otricanie" data-file="влажный инцидент">влажный инцидент</button>
+                <button class="grid-button audio-btn" data-folder="otricanie" data-file="мне пофиг">мне пофиг</button>
+                <button class="grid-button audio-btn" data-folder="otricanie" data-file="не знаю ничего">не знаю ничего</button>
+                <button class="grid-button audio-btn" data-folder="otricanie" data-file="это ии">это ии</button>
+                <button class="grid-button audio-btn" data-folder="otricanie" data-file="я теперь плохой">я теперь плохой</button>
+                <button class="grid-button back-btn">назад</button>
             </div>
 
             <!-- Список "Я занят" -->
@@ -262,7 +272,8 @@
             'ygroza': document.getElementById('ygroza-list'),
             'ydivlenie': document.getElementById('ydivlenie-list'),
             'soglasie': document.getElementById('soglasie-list'),
-            'nesoglasie': document.getElementById('nesoglasie-list')
+            'nesoglasie': document.getElementById('nesoglasie-list'),
+            'otricanie': document.getElementById('otricanie-list')
         };
         
         const triggers = {
@@ -270,7 +281,8 @@
             'ygroza': document.getElementById('ygroza-trigger'),
             'ydivlenie': document.getElementById('ydivlenie-trigger'),
             'soglasie': document.getElementById('soglasie-trigger'),
-            'nesoglasie': document.getElementById('nesoglasie-trigger')
+            'nesoglasie': document.getElementById('nesoglasie-trigger'),
+            'otricanie': document.getElementById('otricanie-trigger')
         };
         
         const backBtns = document.querySelectorAll('.back-btn');
@@ -290,7 +302,9 @@
             btn.addEventListener('click', () => {
                 Object.values(lists).forEach(list => list.classList.remove('show-animated'));
                 setTimeout(() => {
-                    Object.values(lists).forEach(list => list.style.display = 'none');
+                    Object.values(lists).forEach(list => {
+                        list.style.display = 'none';
+                    });
                     mainGrid.style.display = 'grid';
                 }, 10);
             });
