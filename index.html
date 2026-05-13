@@ -32,7 +32,7 @@
 
         .header-container {
             margin-top: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             background: transparent;
             text-align: center;
             width: 100%;
@@ -51,21 +51,23 @@
         .buttons-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            gap: 12px;
             width: 90%;
             max-width: 400px;
-            padding: 20px;
+            padding: 10px 20px;
         }
 
         .grid-button {
             background-color: transparent;
             border: 1px solid white;
             color: white;
-            padding: 20px 0;
-            font-size: 1.2rem;
+            /* Высота уменьшена в два раза (было 20px 0) */
+            padding: 10px 0; 
+            font-size: 1.1rem;
             text-align: center;
             cursor: pointer;
-            border-radius: 4px;
+            /* Слегка закругленные края */
+            border-radius: 12px; 
             transition: all 0.3s ease;
             backdrop-filter: blur(2px);
             -webkit-tap-highlight-color: transparent;
@@ -74,7 +76,7 @@
         /* Визуальный отклик при нажатии */
         .grid-button:active {
             background-color: rgba(255, 255, 255, 0.2);
-            transform: scale(0.98);
+            transform: scale(0.96);
         }
 
         /* Невидимый холст для анализа пикселей */
@@ -83,7 +85,7 @@
         }
 
         .content {
-            margin-top: 10px;
+            margin-top: 15px;
             text-align: center;
             opacity: 0.8;
             font-size: 0.9rem;
@@ -115,10 +117,6 @@
     </div>
 
     <script>
-        /**
-         * Функция анализирует верхний ряд пикселей фонового изображения
-         * и устанавливает соответствующий цвет для статус-бара и фона страницы.
-         */
         function updateThemeColor() {
             const img = new Image();
             img.src = 'fon.png';
@@ -152,13 +150,9 @@
 
                 document.getElementById('theme-color-meta').setAttribute('content', hexColor);
                 document.body.style.backgroundColor = hexColor;
-                
-                console.log("Status bar color updated to:", hexColor);
             };
 
             img.onerror = function() {
-                console.error("Не удалось загрузить fon.png для анализа цвета.");
-                // Дефолтный темный цвет, если картинка не найдена
                 document.body.style.backgroundColor = "#121212";
             };
         }
