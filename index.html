@@ -8,7 +8,7 @@
     <!-- Фавикон -->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     
-    <!-- Цвет статус-бара (будет обновлен скриптом) -->
+    <!-- Цвет статус-бара -->
     <meta id="theme-color-meta" name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -32,7 +32,8 @@
 
         .header-container {
             margin-top: 20px;
-            margin-bottom: 20px;
+            /* Расстояние до кнопок сокращено в два раза (было 20px) */
+            margin-bottom: 10px;
             background: transparent;
             text-align: center;
             width: 100%;
@@ -61,12 +62,11 @@
             background-color: transparent;
             border: 1px solid white;
             color: white;
-            /* Высота уменьшена в два раза (было 20px 0) */
-            padding: 10px 0; 
+            /* Высота уменьшена на 20% (было 10px, стало 8px сверху и снизу) */
+            padding: 8px 0; 
             font-size: 1.1rem;
             text-align: center;
             cursor: pointer;
-            /* Слегка закругленные края */
             border-radius: 12px; 
             transition: all 0.3s ease;
             backdrop-filter: blur(2px);
