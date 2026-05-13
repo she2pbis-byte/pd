@@ -73,7 +73,7 @@
             background-color: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.5);
             color: white;
-            padding: 5px 10px; /* Уменьшены отступы */
+            padding: 5px 10px; 
             font-size: 1rem;
             text-align: center;
             cursor: pointer;
@@ -86,7 +86,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 35px; /* Высота уменьшена примерно в два раза */
+            min-height: 35px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
@@ -96,7 +96,8 @@
             color: #000; 
             border: 1px solid rgba(255, 255, 255, 0.8);
             font-weight: 800;
-            min-height: 60px; /* Оставляем комфортную высоту для списка */
+            min-height: 70px; /* Немного увеличил высоту под крупный шрифт */
+            font-size: 1.5rem; /* Шрифт увеличен в 1.5 раза */
             /* Белое непрозрачное обрамление шрифта 1px */
             -webkit-text-stroke: 1px #ffffff;
             text-stroke: 1px #ffffff;
@@ -111,7 +112,8 @@
             min-height: 50px;
             opacity: 1;
             backdrop-filter: none;
-            -webkit-text-stroke: 0; /* Убираем обводку на кнопке назад */
+            -webkit-text-stroke: 0; 
+            font-size: 1rem;
         }
 
         .grid-button:active {
@@ -147,7 +149,6 @@
             letter-spacing: 1px;
         }
 
-        /* Скрываем подсказку на главной (текст пустой по умолчанию) */
         #hint-text {
             min-height: 1.2em;
         }
@@ -202,7 +203,6 @@
     </div>
 
     <script>
-        // 1. Определение цвета фона
         function updateThemeColor() {
             const img = new Image();
             img.src = 'fon.png';
@@ -233,7 +233,6 @@
             };
         }
 
-        // 2. Навигация
         const mainGrid = document.getElementById('main-grid');
         const MapList = document.getElementById('soglasie-list');
         const trigger = document.getElementById('soglasie-trigger');
@@ -255,7 +254,6 @@
             }, 10);
         });
 
-        // 3. Аудио логика
         let currentAudio = null;
         let activeBtn = null;
 
