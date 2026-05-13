@@ -163,11 +163,18 @@
                 <button class="grid-button">3</button>
                 <button class="grid-button">4</button>
                 <button class="grid-button">5</button>
-                <button class="grid-button">6</button>
+                <button id="busy-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">Я ЗАНЯТ</button>
                 <button id="ygroza-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">УГРОЗА</button>
                 <button id="ydivlenie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">УДИВЛЕНИЕ</button>
                 <button id="soglasie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">СОГЛАСИЕ</button>
                 <button id="nesoglasie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">НЕ СОГЛАСЕН</button>
+            </div>
+
+            <!-- Список "Я занят" -->
+            <div id="busy-list" class="buttons-list">
+                <button class="grid-button audio-btn" data-folder="busy" data-file="важная тренировка">важная тренировка</button>
+                <button class="grid-button audio-btn" data-folder="busy" data-file="дефицит работоспособности">дефицит работоспособности</button>
+                <button class="grid-button back-btn">назад</button>
             </div>
 
             <!-- Список "Угроза" -->
@@ -250,50 +257,40 @@
         }
 
         const mainGrid = document.getElementById('main-grid');
-        const YgrozaList = document.getElementById('ygroza-list');
-        const YdivlenieList = document.getElementById('ydivlenie-list');
-        const SoglasieList = document.getElementById('soglasie-list');
-        const NesoglasieList = document.getElementById('nesoglasie-list');
+        const lists = {
+            'busy': document.getElementById('busy-list'),
+            'ygroza': document.getElementById('ygroza-list'),
+            'ydivlenie': document.getElementById('ydivlenie-list'),
+            'soglasie': document.getElementById('soglasie-list'),
+            'nesoglasie': document.getElementById('nesoglasie-list')
+        };
         
-        const triggerYgroza = document.getElementById('ygroza-trigger');
-        const triggerYdivlenie = document.getElementById('ydivlenie-trigger');
-        const triggerSoglasie = document.getElementById('soglasie-trigger');
-        const triggerNesoglasie = document.getElementById('nesoglasie-trigger');
+        const triggers = {
+            'busy': document.getElementById('busy-trigger'),
+            'ygroza': document.getElementById('ygroza-trigger'),
+            'ydivlenie': document.getElementById('ydivlenie-trigger'),
+            'soglasie': document.getElementById('soglasie-trigger'),
+            'nesoglasie': document.getElementById('nesoglasie-trigger')
+        };
+        
         const backBtns = document.querySelectorAll('.back-btn');
 
         // Открытие разделов
-        triggerYgroza.addEventListener('click', () => {
-            mainGrid.style.display = 'none';
-            YgrozaList.classList.add('show-animated');
-        });
-
-        triggerYdivlenie.addEventListener('click', () => {
-            mainGrid.style.display = 'none';
-            YdivlenieList.classList.add('show-animated');
-        });
-
-        triggerSoglasie.addEventListener('click', () => {
-            mainGrid.style.display = 'none';
-            SoglasieList.classList.add('show-animated');
-        });
-
-        triggerNesoglasie.addEventListener('click', () => {
-            mainGrid.style.display = 'none';
-            NesoglasieList.classList.add('show-animated');
+        Object.keys(triggers).forEach(key => {
+            if (triggers[key]) {
+                triggers[key].addEventListener('click', () => {
+                    mainGrid.style.display = 'none';
+                    lists[key].classList.add('show-animated');
+                });
+            }
         });
 
         // Кнопки назад
         backBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                YgrozaList.classList.remove('show-animated');
-                YdivlenieList.classList.remove('show-animated');
-                SoglasieList.classList.remove('show-animated');
-                NesoglasieList.classList.remove('show-animated');
+                Object.values(lists).forEach(list => list.classList.remove('show-animated'));
                 setTimeout(() => {
-                    YgrozaList.style.display = 'none';
-                    YdivlenieList.style.display = 'none';
-                    SoglasieList.style.display = 'none';
-                    NesoglasieList.style.display = 'none';
+                    Object.values(lists).forEach(list => list.style.display = 'none');
                     mainGrid.style.display = 'grid';
                 }, 10);
             });
