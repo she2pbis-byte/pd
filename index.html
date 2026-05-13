@@ -73,7 +73,7 @@
             background-color: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.5);
             color: white;
-            padding: 15px 10px; 
+            padding: 5px 10px; /* Уменьшены отступы */
             font-size: 1rem;
             text-align: center;
             cursor: pointer;
@@ -86,27 +86,32 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 60px;
+            min-height: 35px; /* Высота уменьшена примерно в два раза */
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         /* Стили для кнопок в разделе Согласие */
         .buttons-list .audio-btn {
-            background-color: rgba(255, 255, 255, 0.5); /* Белый 50% прозрачности */
-            color: #000; /* Черный текст для контраста на белом фоне */
+            background-color: rgba(255, 255, 255, 0.5); 
+            color: #000; 
             border: 1px solid rgba(255, 255, 255, 0.8);
-            font-weight: 600;
+            font-weight: 800;
+            min-height: 60px; /* Оставляем комфортную высоту для списка */
+            /* Белое непрозрачное обрамление шрифта 1px */
+            -webkit-text-stroke: 1px #ffffff;
+            text-stroke: 1px #ffffff;
         }
 
-        /* Стиль кнопки Назад в разделе Согласие */
+        /* Стиль кнопки Назад */
         #back-btn {
-            background-color: #000000; /* Черный непрозрачный */
+            background-color: #000000;
             color: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.4);
             margin-top: 20px;
             min-height: 50px;
             opacity: 1;
             backdrop-filter: none;
+            -webkit-text-stroke: 0; /* Убираем обводку на кнопке назад */
         }
 
         .grid-button:active {
@@ -140,6 +145,11 @@
             padding-bottom: 40px;
             font-weight: 300;
             letter-spacing: 1px;
+        }
+
+        /* Скрываем подсказку на главной (текст пустой по умолчанию) */
+        #hint-text {
+            min-height: 1.2em;
         }
 
         @keyframes fadeIn {
@@ -183,16 +193,16 @@
             <button class="grid-button audio-btn" data-file="не поспоришь">не поспоришь</button>
             <button class="grid-button audio-btn" data-file="похоже правда">похоже правда</button>
             <button class="grid-button audio-btn" data-file="принимаю условия">принимаю условия</button>
-            <button id="back-btn" class="grid-button">← назад</button>
+            <button id="back-btn" class="grid-button">назад</button>
         </div>
     </div>
 
     <div class="content">
-        <p id="hint-text">Выберите номер ответа</p>
+        <p id="hint-text"></p>
     </div>
 
     <script>
-        // 1. Определение цвета фона на основе изображения
+        // 1. Определение цвета фона
         function updateThemeColor() {
             const img = new Image();
             img.src = 'fon.png';
@@ -241,18 +251,17 @@
             setTimeout(() => {
                 MapList.style.display = 'none';
                 mainGrid.style.display = 'grid';
-                hintText.innerText = 'Выберите номер ответа';
+                hintText.innerText = '';
             }, 10);
         });
 
-        // 3. Улучшенная логика Аудио
+        // 3. Аудио логика
         let currentAudio = null;
         let activeBtn = null;
 
         document.querySelectorAll('.audio-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const fileName = this.getAttribute('data-file');
-                
                 const encodedName = encodeURIComponent(fileName);
                 const audioPath = `soglasie/${encodedName}.mp3`;
 
@@ -274,7 +283,6 @@
                     console.error("Audio error:", error);
                     this.classList.remove('playing');
                     this.classList.add('error');
-                    
                     setTimeout(() => this.classList.remove('error'), 1000);
                 });
 
