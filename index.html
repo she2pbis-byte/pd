@@ -2,143 +2,82 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <link rel="icon" type="image/x-icon" href="ico.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ПСОВСКИЕ ОТВЕТЫ</title>
     
-    <meta name="theme-color" id="status-bar-color" content="#000000">
-    <title>Псовские ответы</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        :root {
-            --bg-main: #000000;
-        }
+    <!-- Фавикон -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    
+    <!-- Цвет статус-бара для мобильных устройств -->
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-        body, html {
+    <style>
+        body {
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: var(--bg-main);
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        }
-
-        /* Контейнер фона */
-        .bg-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            /* Установлено название fon.png */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Фоновое изображение */
             background-image: url('fon.png');
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
-            z-index: -1;
-            transition: opacity 0.8s ease-out, transform 1.2s ease-out;
-            opacity: 0;
-            transform: scale(1.05);
-        }
-
-        .bg-container.loaded {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        header {
-            position: absolute;
-            top: env(safe-area-inset-top, 20px);
-            width: 100%;
-            text-align: center;
-            pointer-events: none;
-            z-index: 10;
-        }
-
-        .title-text {
+            background-attachment: fixed;
+            background-color: #000; /* Резервный цвет */
             color: white;
-            font-size: 0.75rem;
-            letter-spacing: 0.6em;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            max-width: 90%;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
             text-transform: uppercase;
-            font-weight: 300;
-            opacity: 0.8;
-            text-shadow: 0 2px 20px rgba(0,0,0,0.9);
-            padding: 20px;
+            letter-spacing: 2px;
         }
 
-        body {
-            overscroll-behavior-y: contain;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .overlay {
+        .status-bar-mock {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.4) 100%);
-            z-index: -1;
-            pointer-events: none;
+            height: env(safe-area-inset-top, 20px);
+            background-color: black;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
+    <!-- Имитация черного статус-бара (для визуализации) -->
+    <div class="status-bar-mock"></div>
 
-    <div id="bg" class="bg-container"></div>
-    <div class="overlay"></div>
-
-    <header>
-        <h1 class="title-text">Псовские ответы</h1>
-    </header>
+    <div class="container">
+        <h1>ПСОВСКИЕ ОТВЕТЫ</h1>
+        <p>Добро пожаловать на страницу.</p>
+    </div>
 
     <script>
-        const statusBar = document.getElementById('status-bar-color');
-        const bgContainer = document.getElementById('bg');
-
-        function initApp() {
-            // Установлено название fon.png для JS загрузчика
-            const fileName = 'fon.png';
+        // Код для проверки загрузки фона
+        window.onload = function() {
             const img = new Image();
-            
-            img.crossOrigin = "Anonymous";
-            img.src = fileName;
-
-            img.onload = function() {
-                bgContainer.classList.add('loaded');
-                
-                try {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = 1;
-                    canvas.height = 1;
-                    
-                    // Берем пиксель для адаптации цвета статус-бара
-                    ctx.drawImage(img, img.width / 2, 10, 1, 1, 0, 0, 1, 1);
-                    const data = ctx.getImageData(0, 0, 1, 1).data;
-                    
-                    const hex = "#" + ((1 << 24) + (data[0] << 16) + (data[1] << 8) + data[2]).toString(16).slice(1);
-                    
-                    statusBar.setAttribute('content', hex);
-                    document.body.style.backgroundColor = hex;
-                } catch (e) {
-                    document.body.style.backgroundColor = '#000000';
-                }
+            img.src = 'fon.png';
+            img.onerror = function() {
+                console.warn("Файл fon.png не найден рядом с index.html. Используется черный фон.");
             };
-
-            img.onerror = () => {
-                console.error("Файл " + fileName + " не найден.");
-                statusBar.setAttribute('content', '#1a1a1a');
-                bgContainer.style.background = 'linear-gradient(135deg, #1a1a1a, #000000)';
-                bgContainer.classList.add('loaded');
-            };
-        }
-
-        if (document.readyState === 'loading') {
-            window.addEventListener('DOMContentLoaded', initApp);
-        } else {
-            initApp();
-        }
+        };
     </script>
 </body>
 </html>
