@@ -90,15 +90,38 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
+        /* Стили для кнопок в разделе Согласие */
+        .buttons-list .audio-btn {
+            background-color: rgba(255, 255, 255, 0.5); /* Белый 50% прозрачности */
+            color: #000; /* Черный текст для контраста на белом фоне */
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+        }
+
+        /* Стиль кнопки Назад в разделе Согласие */
+        #back-btn {
+            background-color: #000000; /* Черный непрозрачный */
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            margin-top: 20px;
+            min-height: 50px;
+            opacity: 1;
+            backdrop-filter: none;
+        }
+
         .grid-button:active {
             background-color: rgba(255, 255, 255, 0.3);
             transform: scale(0.95);
         }
 
+        .buttons-list .audio-btn:active {
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+
         .grid-button.playing {
             border-color: #00ffcc;
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
-            background-color: rgba(0, 255, 204, 0.1);
+            background-color: rgba(0, 255, 204, 0.3) !important;
         }
 
         .grid-button.error {
@@ -160,7 +183,7 @@
             <button class="grid-button audio-btn" data-file="не поспоришь">не поспоришь</button>
             <button class="grid-button audio-btn" data-file="похоже правда">похоже правда</button>
             <button class="grid-button audio-btn" data-file="принимаю условия">принимаю условия</button>
-            <button id="back-btn" class="grid-button" style="border-color: rgba(255,255,255,0.3); font-size: 0.8rem; margin-top: 20px; min-height: 40px;">← назад</button>
+            <button id="back-btn" class="grid-button">← назад</button>
         </div>
     </div>
 
@@ -230,11 +253,9 @@
             button.addEventListener('click', function() {
                 const fileName = this.getAttribute('data-file');
                 
-                // Важно: Кодируем имя файла для поддержки кириллицы
                 const encodedName = encodeURIComponent(fileName);
                 const audioPath = `soglasie/${encodedName}.mp3`;
 
-                // Очистка предыдущего состояния
                 if (currentAudio) {
                     currentAudio.pause();
                     currentAudio.currentTime = 0;
@@ -247,7 +268,6 @@
                 currentAudio = audio;
                 activeBtn = this;
 
-                // Добавляем класс проигрывания
                 this.classList.add('playing');
 
                 audio.play().catch(error => {
@@ -255,7 +275,6 @@
                     this.classList.remove('playing');
                     this.classList.add('error');
                     
-                    // Убираем индикацию ошибки через секунду
                     setTimeout(() => this.classList.remove('error'), 1000);
                 });
 
