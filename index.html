@@ -158,7 +158,7 @@
         <div class="buttons-container">
             <!-- Главная сетка -->
             <div id="main-grid" class="buttons-grid">
-                <button class="grid-button">3</button>
+                <button id="vozmyschenie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">ВОЗМУЩЕНИЕ</button>
                 <button class="grid-button">4</button>
                 <button id="otricanie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">ОТРИЦАНИЕ</button>
                 <button id="busy-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">Я ЗАНЯТ</button>
@@ -166,6 +166,18 @@
                 <button id="ydivlenie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">УДИВЛЕНИЕ</button>
                 <button id="soglasie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">СОГЛАСИЕ</button>
                 <button id="nesoglasie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">НЕ СОГЛАСЕН</button>
+            </div>
+
+            <!-- Список "Возмущение" -->
+            <div id="vozmyschenie-list" class="buttons-list">
+                <button class="grid-button audio-btn" data-folder="vozmyschenie" data-file="еще одна выходка">еще одна выходка</button>
+                <button class="grid-button audio-btn" data-folder="vozmyschenie" data-file="кто согласовал">кто согласовал</button>
+                <button class="grid-button audio-btn" data-folder="vozmyschenie" data-file="не приходило в голову">не приходило в голову</button>
+                <button class="grid-button audio-btn" data-folder="vozmyschenie" data-file="немножко прихерели">немножко прихерели</button>
+                <button class="grid-button audio-btn" data-folder="vozmyschenie" data-file="пустые желудочки">пустые желудочки</button>
+                <button class="grid-button audio-btn" data-folder="vozmyschenie" data-file="ситуацию усугублять">ситуацию усугублять</button>
+                <button class="grid-button audio-btn" data-folder="vozmyschenie" data-file="ты слушаешь меня вообще">ты слушаешь меня вообще</button>
+                <button class="grid-button back-btn">назад</button>
             </div>
 
             <!-- Список "Отрицание" -->
@@ -271,7 +283,8 @@
             'ydivlenie': document.getElementById('ydivlenie-list'),
             'soglasie': document.getElementById('soglasie-list'),
             'nesoglasie': document.getElementById('nesoglasie-list'),
-            'otricanie': document.getElementById('otricanie-list')
+            'otricanie': document.getElementById('otricanie-list'),
+            'vozmyschenie': document.getElementById('vozmyschenie-list')
         };
         
         const triggers = {
@@ -280,7 +293,8 @@
             'ydivlenie': document.getElementById('ydivlenie-trigger'),
             'soglasie': document.getElementById('soglasie-trigger'),
             'nesoglasie': document.getElementById('nesoglasie-trigger'),
-            'otricanie': document.getElementById('otricanie-trigger')
+            'otricanie': document.getElementById('otricanie-trigger'),
+            'vozmyschenie': document.getElementById('vozmyschenie-trigger')
         };
         
         const backBtns = document.querySelectorAll('.back-btn');
