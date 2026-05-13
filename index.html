@@ -93,14 +93,14 @@
         /* Стили для кнопок в разделе Согласие */
         .buttons-list .audio-btn {
             background-color: rgba(255, 255, 255, 0.5); 
-            color: #000; 
+            color: #000000; /* Чисто черный цвет без прозрачности */
             border: 1px solid rgba(255, 255, 255, 0.8);
             font-weight: 800;
-            min-height: 70px; /* Немного увеличил высоту под крупный шрифт */
-            font-size: 1.5rem; /* Шрифт увеличен в 1.5 раза */
-            /* Белое непрозрачное обрамление шрифта 1px */
-            -webkit-text-stroke: 1px #ffffff;
-            text-stroke: 1px #ffffff;
+            min-height: 70px; 
+            font-size: 1.5rem; 
+            /* Убрано обрамление шрифта */
+            -webkit-text-stroke: 0;
+            text-stroke: 0;
         }
 
         /* Стиль кнопки Назад */
