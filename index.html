@@ -28,11 +28,11 @@
             flex-direction: column;
             align-items: center;
             transition: background-color 0.5s ease;
+            overflow-x: hidden;
         }
 
         .header-container {
             margin-top: 20px;
-            /* Расстояние до кнопок сокращено в два раза (было 20px) */
             margin-bottom: 10px;
             background: transparent;
             text-align: center;
@@ -48,38 +48,55 @@
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
         }
 
-        /* Контейнер для кнопок */
+        /* Контейнеры для кнопок */
+        .buttons-container {
+            width: 90%;
+            max-width: 400px;
+            padding: 10px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .buttons-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-            width: 90%;
-            max-width: 400px;
-            padding: 10px 20px;
+            width: 100%;
+        }
+
+        /* Список в один столбец для согласия */
+        .buttons-list {
+            display: none; /* Скрыто по умолчанию */
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
         }
 
         .grid-button {
-            background-color: transparent;
+            background-color: rgba(255, 255, 255, 0.05);
             border: 1px solid white;
             color: white;
-            /* Высота уменьшена на 20% (было 10px, стало 8px сверху и снизу) */
-            padding: 8px 0; 
-            font-size: 1.1rem;
+            padding: 12px 10px; 
+            font-size: 1rem;
             text-align: center;
             cursor: pointer;
             border-radius: 12px; 
             transition: all 0.3s ease;
-            backdrop-filter: blur(2px);
+            backdrop-filter: blur(4px);
             -webkit-tap-highlight-color: transparent;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px;
         }
 
-        /* Визуальный отклик при нажатии */
         .grid-button:active {
             background-color: rgba(255, 255, 255, 0.2);
             transform: scale(0.96);
         }
 
-        /* Невидимый холст для анализа пикселей */
         #analysis-canvas {
             display: none;
         }
@@ -89,6 +106,18 @@
             text-align: center;
             opacity: 0.8;
             font-size: 0.9rem;
+            padding-bottom: 30px;
+        }
+
+        /* Анимация появления */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .show-animated {
+            display: flex !important;
+            animation: fadeIn 0.4s ease forwards;
         }
     </style>
 </head>
@@ -96,27 +125,43 @@
     <canvas id="analysis-canvas"></canvas>
 
     <div class="header-container">
-        <h1>ПСОВСКИЕ ОТВЕТЫ</h1>
+        <h1 id="main-title">ПСОВСКИЕ ОТВЕТЫ</h1>
     </div>
 
-    <div class="buttons-grid">
-        <button class="grid-button">1</button>
-        <button class="grid-button">2</button>
-        <button class="grid-button">3</button>
-        <button class="grid-button">4</button>
-        <button class="grid-button">5</button>
-        <button class="grid-button">6</button>
-        <button class="grid-button">7</button>
-        <button class="grid-button">8</button>
-        <button class="grid-button">9</button>
-        <button class="grid-button">10</button>
+    <div class="buttons-container">
+        <!-- Главная сетка -->
+        <div id="main-grid" class="buttons-grid">
+            <button class="grid-button">1</button>
+            <button class="grid-button">2</button>
+            <button class="grid-button">3</button>
+            <button class="grid-button">4</button>
+            <button class="grid-button">5</button>
+            <button class="grid-button">6</button>
+            <button class="grid-button">7</button>
+            <button class="grid-button">8</button>
+            <button id="soglasie-trigger" class="grid-button">СОГЛАСИЕ</button>
+            <button class="grid-button">10</button>
+        </div>
+
+        <!-- Список "Согласие" -->
+        <div id="soglasie-list" class="buttons-list">
+            <button class="grid-button audio-btn" data-file="вопросов нуль">вопросов нуль</button>
+            <button class="grid-button audio-btn" data-file="гениально">гениально</button>
+            <button class="grid-button audio-btn" data-file="доверяю но">доверяю но</button>
+            <button class="grid-button audio-btn" data-file="не поспоришь">не поспоришь</button>
+            <button class="grid-button audio-btn" data-file="похоже правда">похоже правда</button>
+            <button class="grid-button audio-btn" data-file="принимаю условия">принимаю условия</button>
+            <!-- Добавил кнопку назад для удобства -->
+            <button id="back-btn" class="grid-button" style="border-color: rgba(255,255,255,0.4); font-size: 0.8rem; margin-top: 10px;">назад</button>
+        </div>
     </div>
 
     <div class="content">
-        <p>Выберите номер ответа</p>
+        <p id="hint-text">Выберите номер ответа</p>
     </div>
 
     <script>
+        // 1. Динамический цвет темы
         function updateThemeColor() {
             const img = new Image();
             img.src = 'fon.png';
@@ -125,29 +170,19 @@
             img.onload = function() {
                 const canvas = document.getElementById('analysis-canvas');
                 const ctx = canvas.getContext('2d');
-                
                 canvas.width = img.width;
                 canvas.height = 1;
-                
                 ctx.drawImage(img, 0, 0, img.width, 1, 0, 0, img.width, 1);
-                
                 const imageData = ctx.getImageData(0, 0, img.width, 1).data;
-                
                 let r = 0, g = 0, b = 0;
                 const count = imageData.length / 4;
-
                 for (let i = 0; i < imageData.length; i += 4) {
-                    r += imageData[i];
-                    g += imageData[i + 1];
-                    b += imageData[i + 2];
+                    r += imageData[i]; g += imageData[i + 1]; b += imageData[i + 2];
                 }
-
                 r = Math.floor(r / count);
                 g = Math.floor(g / count);
                 b = Math.floor(b / count);
-
                 const hexColor = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-
                 document.getElementById('theme-color-meta').setAttribute('content', hexColor);
                 document.body.style.backgroundColor = hexColor;
             };
@@ -156,6 +191,58 @@
                 document.body.style.backgroundColor = "#121212";
             };
         }
+
+        // 2. Логика интерфейса
+        const mainGrid = document.getElementById('main-grid');
+        const soglasieList = document.getElementById('soglasie-list');
+        const trigger = document.getElementById('soglasie-trigger');
+        const backBtn = document.getElementById('back-btn');
+        const hintText = document.getElementById('hint-text');
+
+        // Переход в режим "Согласие"
+        trigger.addEventListener('click', () => {
+            mainGrid.style.display = 'none';
+            soglasieList.classList.add('show-animated');
+            hintText.innerText = 'Раздел: СОГЛАСИЕ';
+        });
+
+        // Возврат назад
+        backBtn.addEventListener('click', () => {
+            soglasieList.classList.remove('show-animated');
+            soglasieList.style.display = 'none';
+            mainGrid.style.display = 'grid';
+            hintText.innerText = 'Выберите номер ответа';
+        });
+
+        // 3. Воспроизведение аудио
+        let currentAudio = null;
+
+        document.querySelectorAll('.audio-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const fileName = this.getAttribute('data-file');
+                const audioPath = `soglasie/${fileName}.mp3`;
+
+                // Останавливаем текущее аудио, если оно играет
+                if (currentAudio) {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                }
+
+                const audio = new Audio(audioPath);
+                currentAudio = audio;
+
+                audio.play().catch(error => {
+                    console.error("Ошибка воспроизведения:", error);
+                    // На мобильных устройствах автовоспроизведение требует первого клика пользователя
+                });
+
+                // Визуальный эффект при проигрывании
+                this.style.borderColor = "#ffcc00";
+                audio.onended = () => {
+                    this.style.borderColor = "white";
+                };
+            });
+        });
 
         window.onload = updateThemeColor;
     </script>
