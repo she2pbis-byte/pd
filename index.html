@@ -63,10 +63,11 @@
             align-items: center;
         }
 
+        /* Уменьшено расстояние между кнопками в 2 раза (было 15px, стало 7.5px) */
         .buttons-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            gap: 7.5px;
             width: 100%;
         }
 
@@ -122,12 +123,11 @@
             transform: scale(0.95);
         }
 
-        /* Состояние при воспроизведении */
         .grid-button.playing {
             border-color: #00ffcc;
             box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
             background-color: rgba(0, 255, 204, 0.3) !important;
-            color: #ffffff !important; /* Белый непрозрачный шрифт при игре */
+            color: #ffffff !important;
             opacity: 1 !important;
         }
 
