@@ -1,0 +1,6 @@
+{
+  "appId": "com.psov.app",
+  "appName": "Псовские ответы",
+  "webDir": ".",
+  "bundledWebRuntime": false
+}
