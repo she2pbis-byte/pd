@@ -1,0 +1,14 @@
+{
+  "name": "psovskie-otvety",
+  "version": "1.0.0",
+  "description": "Soundboard App",
+  "main": "index.html",
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/cli": "^6.0.0",
+    "@capacitor/core": "^6.0.0"
+  },
+  "scripts": {
+    "build": "echo 'No build step needed for plain HTML'"
+  }
+}
