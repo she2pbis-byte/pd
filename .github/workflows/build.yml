@@ -17,7 +17,7 @@ jobs:
           node-version: '20'
 
       - name: Install Dependencies
-        run: npm install @capacitor/core @capacitor/cli @capacitor/android
+        run: npm install
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -27,13 +27,20 @@ jobs:
 
       - name: Initialize Android Project
         run: |
-          # Добавляем платформу (игнорируем если уже есть)
           npx cap add android || true
-          # Синхронизируем файлы из папки www в проект android
-          npx cap sync android
-
-      - name: Build APK
+          
+      - name: Generate App Icons
         run: |
+          # Создаем временную структуру для генератора
+          mkdir -p assets/android
+          # Копируем вашу иконку в нужное место
+          cp www/icon.png assets/icon.png
+          # Генерируем все размеры иконок для Android
+          npx @capacitor/assets generate --android --assetPath assets
+
+      - name: Sync and Build
+        run: |
+          npx cap sync android
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
@@ -41,5 +48,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: PsovskieOtvety-APK
+          name: PsovskieOtvety-With-Icon
           path: android/app/build/outputs/apk/debug/app-debug.apk
