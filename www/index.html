@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ПСОВСКИЕ ОТВЕТЫ</title>
+    
+    <!-- Подключение иконки ico.ico -->
+    <link rel="icon" href="ico.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="ico.ico" type="image/x-icon">
+    
+    <meta id="theme-color-meta" name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-image: url('fon.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-color: #000; 
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.5s ease;
+            overflow: hidden;
+        }
+
+        .app-wrapper {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; 
+            align-items: center;
+            width: 100%;
+            padding-top: 40px; 
+        }
+
+        .header-container {
+            margin-bottom: 20px;
+            background: transparent;
+            text-align: center;
+            width: 100%;
+            z-index: 1001;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .buttons-container {
+            width: 90%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 7.5px;
+            width: 100%;
+        }
+
+        .buttons-list {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .grid-button {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 5px 10px; 
+            font-size: 1rem; 
+            text-align: center;
+            cursor: pointer;
+            border-radius: 15px; 
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            -webkit-tap-highlight-color: transparent;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 45px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .buttons-list .audio-btn {
+            background-color: rgba(255, 255, 255, 0.75); 
+            color: #000000; 
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            font-weight: 800;
+            min-height: 46px; 
+            font-size: 1rem; 
+        }
+
+        .back-btn {
+            background-color: #000000;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            margin-top: 10px;
+            min-height: 50px;
+            font-size: 1rem;
+        }
+
+        .grid-button:active {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(0.95);
+        }
+
+        .grid-button.playing {
+            border-color: #00ffcc;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);
+            background-color: rgba(0, 255, 204, 0.95) !important;
+            color: #000000 !important;
+            opacity: 1 !important;
+        }
+
+        .grid-button.error {
+            border-color: #ff4444;
+        }
+
+        #analysis-canvas {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .show-animated {
+            display: flex !important;
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="analysis-canvas"></canvas>
+
+    <div class="app-wrapper">
+        <div class="header-container">
+            <h1 id="main-title">ПСОВСКИЕ ОТВЕТЫ</h1>
+        </div>
+
+        <div class="buttons-container">
+            <!-- Главная сетка -->
+            <div id="main-grid" class="buttons-grid">
+                <button id="vozmyschenie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">ВОЗМУЩЕНИЕ</button>
+                <button id="dosada-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">ДОСАДА</button>
+                <button id="otricanie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">ОТРИЦАНИЕ</button>
+                <button id="busy-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">Я ЗАНЯТ</button>
+                <button id="ygroza-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">УГРОЗА</button>
+                <button id="ydivlenie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">УДИВЛЕНИЕ</button>
+                <button id="soglasie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">СОГЛАСИЕ</button>
+                <button id="nesoglasie-trigger" class="grid-button" style="background: rgba(255,255,255,0.15); font-weight: bold;">НЕ СОГЛАСЕН</button>
+            </div>
+
+            <!-- Список "Возмущение" -->
+            <div id="vozmyschenie-list" class="buttons-list">
+                <button class="grid-button audio-btn" data-folder="vozmyschenie" data-file="еще одна выходка">еще одна выходка</button>
+                <button class="grid-button audio-btn" data-folder="vozmyschenie" data-file="кто согласовал">кто согласовал</button>
+                <button class="grid-button audio-btn" data-folder="vozmyschenie" data-file="не приходило в голову">не приходило в голову</button>
+                <button class="grid-button audio-btn" data-folder="vozmyschenie" data-file="немножко прихерели">немножко прихерели</button>
+                <button class="grid-button audio-btn" data-folder="vozmyschenie" data-file="пустые желудочки">пустые желудочки</button>
+                <button class="grid-button audio-btn" data-folder="vozmyschenie" data-file="ситуацию усугублять">ситуацию усугублять</button>
+                <button class="grid-button audio-btn" data-folder="vozmyschenie" data-file="ты слушаешь меня вообще">ты слушаешь меня вообще</button>
+                <button class="grid-button back-btn">назад</button>
+            </div>
+
+            <!-- Список "Досада" -->
+            <div id="dosada-list" class="buttons-list">
+                <button class="grid-button audio-btn" data-folder="dosada" data-file="алес викторыч">алес викторыч</button>
+                <button class="grid-button audio-btn" data-folder="dosada" data-file="мопсарнулся">мопсарнулся</button>
+                <button class="grid-button audio-btn" data-folder="dosada" data-file="не то слово">не то слово</button>
+                <button class="grid-button audio-btn" data-folder="dosada" data-file="неприятная неожиданность">неприятная неожиданность</button>
+                <button class="grid-button audio-btn" data-folder="dosada" data-file="ой матерь мопсья">ой матерь мопсья</button>
+                <button class="grid-button audio-btn" data-folder="dosada" data-file="сделал все что мопс">сделал все что мопс</button>
+                <button class="grid-button audio-btn" data-folder="dosada" data-file="тошность бытия">тошность бытия</button>
+                <button class="grid-button audio-btn" data-folder="dosada" data-file="хоспади за что">хоспади за что</button>
+                <button class="grid-button back-btn">назад</button>
+            </div>
+
+            <!-- Список "Отрицание" -->
+            <div id="otricanie-list" class="buttons-list">
+                <button class="grid-button audio-btn" data-folder="otricanie" data-file="влажный инцидент">влажный инцидент</button>
+                <button class="grid-button audio-btn" data-folder="otricanie" data-file="мне пофиг">мне пофиг</button>
+                <button class="grid-button audio-btn" data-folder="otricanie" data-file="не знаю ничего">не знаю ничего</button>
+                <button class="grid-button audio-btn" data-folder="otricanie" data-file="это ии">это ии</button>
+                <button class="grid-button audio-btn" data-folder="otricanie" data-file="я теперь плохой">я теперь плохой</button>
+                <button class="grid-button back-btn">назад</button>
+            </div>
+
+            <!-- Список "Я занят" -->
+            <div id="busy-list" class="buttons-list">
+                <button class="grid-button audio-btn" data-folder="yazanyat" data-file="важная тренировка">важная тренировка</button>
+                <button class="grid-button audio-btn" data-folder="yazanyat" data-file="дефицит работоспособности">дефицит работоспособности</button>
+                <button class="grid-button back-btn">назад</button>
+            </div>
+
+            <!-- Список "Угроза" -->
+            <div id="ygroza-list" class="buttons-list">
+                <button class="grid-button audio-btn" data-folder="ygroza" data-file="мстя моя">мстя моя</button>
+                <button class="grid-button audio-btn" data-folder="ygroza" data-file="ой все">ой все</button>
+                <button class="grid-button audio-btn" data-folder="ygroza" data-file="подумай о псоведении">подумай о псоведении</button>
+                <button class="grid-button audio-btn" data-folder="ygroza" data-file="сотри присутствие">сотри присутствие</button>
+                <button class="grid-button audio-btn" data-folder="ygroza" data-file="тьфу на тебя">тьфу на тебя</button>
+                <button class="grid-button audio-btn" data-folder="ygroza" data-file="щас начищу">щас начищу</button>
+                <button class="grid-button audio-btn" data-folder="ygroza" data-file="я пердупредил">я пердупредил</button>
+                <button class="grid-button back-btn">назад</button>
+            </div>
+
+            <!-- Список "Удивление" -->
+            <div id="ydivlenie-list" class="buttons-list">
+                <button class="grid-button audio-btn" data-folder="ydivlenie" data-file="батюшки">батюшки</button>
+                <button class="grid-button audio-btn" data-folder="ydivlenie" data-file="куда катиться мир">куда катиться мир</button>
+                <button class="grid-button audio-btn" data-folder="ydivlenie" data-file="странно что это удивило">странно что это удивило</button>
+                <button class="grid-button audio-btn" data-folder="ydivlenie" data-file="уху ел я сегодня">уху ел я сегодня</button>
+                <button class="grid-button audio-btn" data-folder="ydivlenie" data-file="я так и знал">я так и знал</button>
+                <button class="grid-button back-btn">назад</button>
+            </div>
+
+            <!-- Список "Согласие" -->
+            <div id="soglasie-list" class="buttons-list">
+                <button class="grid-button audio-btn" data-folder="soglasie" data-file="вопросов нуль">вопросов нуль</button>
+                <button class="grid-button audio-btn" data-folder="soglasie" data-file="гениально">гениально</button>
+                <button class="grid-button audio-btn" data-folder="soglasie" data-file="доверяю но">доверяю но</button>
+                <button class="grid-button audio-btn" data-folder="soglasie" data-file="не поспоришь">не поспоришь</button>
+                <button class="grid-button audio-btn" data-folder="soglasie" data-file="похоже правда">похоже правда</button>
+                <button class="grid-button audio-btn" data-folder="soglasie" data-file="принимаю условия">принимаю условия</button>
+                <button class="grid-button back-btn">назад</button>
+            </div>
+
+            <!-- Список "Не согласен" -->
+            <div id="nesoglasie-list" class="buttons-list">
+                <button class="grid-button audio-btn" data-folder="nesoglasie" data-file="дешовая монепсуляция">дешовая монепсуляция</button>
+                <button class="grid-button audio-btn" data-folder="nesoglasie" data-file="не надо нервировать">не надо нервировать</button>
+                <button class="grid-button audio-btn" data-folder="nesoglasie" data-file="непопулярная версия">непопулярная версия</button>
+                <button class="grid-button audio-btn" data-folder="nesoglasie" data-file="обоснуй">обоснуй</button>
+                <button class="grid-button audio-btn" data-folder="nesoglasie" data-file="ошибаешься сашенька">ошибаешься сашенька</button>
+                <button class="grid-button audio-btn" data-folder="nesoglasie" data-file="странная логика">странная логика</button>
+                <button class="grid-button audio-btn" data-folder="nesoglasie" data-file="суета задорма">суета задорма</button>
+                <button class="grid-button audio-btn" data-folder="nesoglasie" data-file="чую подвох">чую подвох</button>
+                <button class="grid-button back-btn">назад</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateThemeColor() {
+            const img = new Image();
+            img.src = 'fon.png';
+            img.crossOrigin = "Anonymous"; 
+
+            img.onload = function() {
+                try {
+                    const canvas = document.getElementById('analysis-canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = 1;
+                    ctx.drawImage(img, 0, 0, img.width, 1, 0, 0, img.width, 1);
+                    const imageData = ctx.getImageData(0, 0, img.width, 1).data;
+                    let r = 0, g = 0, b = 0;
+                    const count = imageData.length / 4;
+                    for (let i = 0; i < imageData.length; i += 4) {
+                        r += imageData[i]; g += imageData[i + 1]; b += imageData[i + 2];
+                    }
+                    r = Math.floor(r / count);
+                    g = Math.floor(g / count);
+                    b = Math.floor(b / count);
+                    const hexColor = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+                    document.getElementById('theme-color-meta').setAttribute('content', hexColor);
+                    document.body.style.backgroundColor = hexColor;
+                } catch(e) {
+                    console.log("Canvas error:", e);
+                }
+            };
+        }
+
+        const mainGrid = document.getElementById('main-grid');
+        const lists = {
+            'busy': document.getElementById('busy-list'),
+            'ygroza': document.getElementById('ygroza-list'),
+            'ydivlenie': document.getElementById('ydivlenie-list'),
+            'soglasie': document.getElementById('soglasie-list'),
+            'nesoglasie': document.getElementById('nesoglasie-list'),
+            'otricanie': document.getElementById('otricanie-list'),
+            'vozmyschenie': document.getElementById('vozmyschenie-list'),
+            'dosada': document.getElementById('dosada-list')
+        };
+        
+        const triggers = {
+            'busy': document.getElementById('busy-trigger'),
+            'ygroza': document.getElementById('ygroza-trigger'),
+            'ydivlenie': document.getElementById('ydivlenie-trigger'),
+            'soglasie': document.getElementById('soglasie-trigger'),
+            'nesoglasie': document.getElementById('nesoglasie-trigger'),
+            'otricanie': document.getElementById('otricanie-trigger'),
+            'vozmyschenie': document.getElementById('vozmyschenie-trigger'),
+            'dosada': document.getElementById('dosada-trigger')
+        };
+        
+        const backBtns = document.querySelectorAll('.back-btn');
+
+        // Открытие разделов
+        Object.keys(triggers).forEach(key => {
+            if (triggers[key]) {
+                triggers[key].addEventListener('click', () => {
+                    mainGrid.style.display = 'none';
+                    lists[key].classList.add('show-animated');
+                });
+            }
+        });
+
+        // Кнопки назад
+        backBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                Object.values(lists).forEach(list => list.classList.remove('show-animated'));
+                setTimeout(() => {
+                    Object.values(lists).forEach(list => {
+                        list.style.display = 'none';
+                    });
+                    mainGrid.style.display = 'grid';
+                }, 10);
+            });
+        });
+
+        let currentAudio = null;
+        let activeBtn = null;
+
+        document.querySelectorAll('.audio-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const folder = this.getAttribute('data-folder');
+                const fileName = this.getAttribute('data-file');
+                const encodedName = encodeURIComponent(fileName);
+                const audioPath = `${folder}/${encodedName}.mp3`;
+
+                if (currentAudio) {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                }
+                if (activeBtn) {
+                    activeBtn.classList.remove('playing', 'error');
+                }
+
+                const audio = new Audio(audioPath);
+                currentAudio = audio;
+                activeBtn = this;
+
+                this.classList.add('playing');
+
+                audio.play().catch(error => {
+                    console.error("Audio error:", error);
+                    this.classList.remove('playing');
+                    this.classList.add('error');
+                    setTimeout(() => this.classList.remove('error'), 1000);
+                });
+
+                audio.onended = () => {
+                    this.classList.remove('playing');
+                };
+            });
+        });
+
+        window.onload = updateThemeColor;
+    </script>
+</body>
+</html>
